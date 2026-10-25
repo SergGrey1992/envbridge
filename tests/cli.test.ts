@@ -88,3 +88,53 @@ it("help succeeds and load errors do not reveal thrown config secrets", async ()
   expect(result.status).toBe(1);
   expect(result.stderr).not.toContain("DO_NOT_LOG_SECRET");
 });
+
+it("bootstrap explicitly loads env file, preserves process precedence and never logs values", async () => {
+  await writeFile(
+    join(root, "runtime.config.ts"),
+    "export default {public:['APP_NAME'],server:['SECRET']};",
+  );
+  await writeFile(
+    join(root, ".env.staging"),
+    "APP_NAME=file-public-canary\nSECRET=file-secret-canary\n",
+  );
+  const result = spawnSync(
+    process.execPath,
+    [
+      resolve("dist/cli.js"),
+      "bootstrap",
+      "--cwd",
+      root,
+      "--dotenv",
+      ".env.staging",
+      "--output",
+      "dist/runtime-env.js",
+    ],
+    {
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        APP_NAME: "shell-public-canary",
+        SECRET: "shell-secret-canary",
+      },
+    },
+  );
+  expect(result.status).toBe(0);
+  expect(result.stdout + result.stderr).not.toContain("shell-public-canary");
+  expect(result.stdout + result.stderr).not.toContain("secret-canary");
+  const output = await readFile(join(root, "dist/runtime-env.js"), "utf8");
+  expect(output).toContain("shell-public-canary");
+  expect(output).not.toContain("file-public-canary");
+  expect(output).not.toContain("secret-canary");
+  await expect(stat(join(root, "runtime-env/client.ts"))).rejects.toThrow();
+});
+it.each([
+  ["bootstrap", "--env-only"],
+  ["bootstrap", "--code-only"],
+  ["bootstrap", "--env", "production"],
+  ["generate", "--dotenv", ".env"],
+  ["generate", "--output", "public/runtime-env.js"],
+])("rejects command-specific options %j", (...args) => {
+  const result = cli(...args, "--cwd", root);
+  expect(result.status).toBe(1);
+});

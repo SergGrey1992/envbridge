@@ -38,7 +38,7 @@ interface Change {
   env: boolean;
   mode: number;
 }
-async function checkPath(
+export async function checkPath(
   path: string,
   root: string,
   allowOutside: boolean,
@@ -61,7 +61,7 @@ async function checkPath(
     }
   }
 }
-async function existing(path: string): Promise<Buffer | undefined> {
+export async function existing(path: string): Promise<Buffer | undefined> {
   try {
     const info = await lstat(path);
     if (!info.isFile()) throw new Error(`Expected regular file: ${path}`);

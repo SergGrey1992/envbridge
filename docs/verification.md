@@ -81,3 +81,11 @@ CI настроен для Node 22 и 24 на Ubuntu, но удалённые Gi
 В реальном examples/next-app воспроизведён отсутствующий createRuntimeEnvHandler: установленный tarball содержал прежний dist/next.d.ts. После замены пакета TypeScript прошёл, но webpack повторно взял старый module snapshot. Добавлен prepare.mjs: npm pack актуальной библиотеки, установка через уникальный временный путь без изменения package.json/.env и сброс только .next/cache и tsconfig.tsbuildinfo. prebuild/predev запускают подготовку автоматически; root prepare:example доступен вручную. Проверка exports останавливает запуск с понятным сообщением при старом пакете вне source checkout.
 
 Повторён именно npm run build пользовательского examples/next-app с автоматическим prebuild: компиляция, TypeScript, page data и standalone build PASS, без прежней ошибки или import warning. В CI добавлена подготовка локального примера; совместимые consumers копируют helper. Библиотечный API не менялся.
+
+## React SPA и документация Next — 25 октября 2026
+
+Пакет поддерживает React CSR без Next: optional Next peer, нейтральный /runtime, явный bootstrap CLI и пример Vite7.3.5. Реальная установка tarball в независимые React18.2.0 и19.2.7 consumers не установила Next.js (проверен npm dependency tree). Для каждого: strict types, dev и одна production build с A/B runtime bootstrap, первый getter до первого render, navigation/reload/error recovery, no-store и secret scan PASS. Hash-файлы приложения и HTML не менялись между окружениями. Машинный отчёт: react-results.json.
+
+После выделения общего ядра повторно прошли все5 строк Next13–16:20 production/standalone A/B browser runs и5 server-only negative builds. Unit/CLI/bootstrap проверки:56 PASS. Исходный обязательный Next API сохранён. Независимое read-only ревью не обнаружило Critical/Important дефектов.
+
+Новые docs/nextjs.md и docs/react.md разделяют способы подключения, env file selection, process.env precedence, пустые overrides, development/production/test, static bootstrap и standalone. Пользовательские .env и .idea не изменялись. Обычный React SSR/React Native/прочие bundlers отдельно не заявлены.

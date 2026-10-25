@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "license": "MIT",
-  "description": "Typed runtime environment variables for Next.js App Router",
+  "description": "Typed runtime environment variables for Next.js and React SPAs",
   "files": [
     "dist",
     "README.md",
@@ -33,6 +33,11 @@
       "types": "./dist/next.d.ts",
       "import": "./dist/next.js",
       "default": "./dist/next.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime.d.ts",
+      "import": "./dist/runtime.js",
+      "default": "./dist/runtime.js"
     }
   },
   "scripts": {
@@ -44,13 +49,14 @@
     "test:consumer": "node scripts/consumer.mjs",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build",
     "prepack": "npm run build",
-    "format": "prettier --write src tests scripts examples/next-app/app examples/next-app/*.ts examples/next-app/prepare.mjs",
-    "format:check": "prettier --check src tests scripts examples/next-app/prepare.mjs",
+    "format": "prettier --write src tests scripts examples/next-app/app examples/next-app/*.ts examples/next-app/prepare.mjs examples/react-vite/src examples/react-vite/*.ts",
+    "format:check": "prettier --check src tests scripts examples/next-app/prepare.mjs examples/react-vite/src examples/react-vite/*.ts",
     "test:docker": "npm pack && node scripts/docker-e2e.mjs",
     "test:static": "node scripts/static-boundary.mjs",
     "test:compat": "node scripts/test-compatibility.mjs",
     "test:example-dev": "node scripts/example-dev.mjs",
-    "prepare:example": "node examples/next-app/prepare.mjs"
+    "prepare:example": "node examples/next-app/prepare.mjs",
+    "test:react": "node scripts/react-e2e.mjs"
   },
   "engines": {
     "node": ">=22.18.0"
@@ -76,5 +82,10 @@
     "eslint": "^9.39.0",
     "typescript-eslint": "^8.46.0",
     "prettier": "^3.6.2"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
   }
 }

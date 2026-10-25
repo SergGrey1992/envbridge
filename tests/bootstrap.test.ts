@@ -1,0 +1,85 @@
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import {
+  mkdtemp,
+  readFile,
+  writeFile,
+  stat,
+  rm,
+  symlink,
+  mkdir,
+} from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { runInNewContext } from "node:vm";
+import { createRuntimeEnvScript } from "../src/runtime.js";
+import { writeBootstrap } from "../src/bootstrap.js";
+let root: string;
+beforeEach(async () => {
+  root = await mkdtemp(join(tmpdir(), "runtime-bootstrap-"));
+});
+afterEach(async () => {
+  vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
+  await rm(root, { recursive: true, force: true });
+});
+const config = { public: ["API_URL", "EMPTY", "MISSING"], server: ["SECRET"] };
+it("creates a script that initializes the browser before React without exposing secrets", () => {
+  vi.stubEnv("API_URL", "\"'<> & </script>\nтест\u2028\u2029");
+  vi.stubEnv("EMPTY", "");
+  vi.stubEnv("SECRET", "SECRET_CANARY");
+  const script = createRuntimeEnvScript(config);
+  expect(script).not.toContain("</script>");
+  expect(script).not.toContain("SECRET_CANARY");
+  const browser: Record<string, unknown> = {};
+  runInNewContext(script, { window: browser });
+  expect(browser.__NEXT_RUNTIME_ENV__).toEqual({
+    version: 1,
+    values: { API_URL: process.env.API_URL, EMPTY: "", MISSING: null },
+  });
+  expect(Object.isFrozen(browser.__NEXT_RUNTIME_ENV__)).toBe(true);
+});
+it("refuses to create public bootstrap in a browser", () => {
+  vi.stubGlobal("window", {});
+  expect(() => createRuntimeEnvScript(config)).toThrow(/server|Node/);
+});
+it("writes an idempotent public JS artifact and changes values without rewriting typed modules", async () => {
+  vi.stubEnv("API_URL", "first");
+  const target = await writeBootstrap(config, { cwd: root });
+  expect(target).toBe(
+    join(
+      await import("node:fs/promises").then((fs) => fs.realpath(root)),
+      "public/runtime-env.js",
+    ),
+  );
+  const first = await readFile(target, "utf8");
+  const before = await stat(target);
+  await writeBootstrap(config, { cwd: root });
+  expect((await stat(target)).mtimeMs).toBe(before.mtimeMs);
+  vi.stubEnv("API_URL", "second");
+  await writeBootstrap(config, { cwd: root });
+  const second = await readFile(target, "utf8");
+  expect(second).toContain("second");
+  expect(second).not.toContain("first");
+  expect(first).toContain("first");
+  await expect(stat(join(root, "runtime-env/client.ts"))).rejects.toThrow();
+});
+it("refuses user JS, outside paths, symlinks and non-JS output", async () => {
+  await mkdir(join(root, "public"));
+  await writeFile(join(root, "public/runtime-env.js"), "// user script");
+  await expect(writeBootstrap(config, { cwd: root })).rejects.toThrow(
+    /overwrite/,
+  );
+  await expect(
+    writeBootstrap(config, { cwd: root, output: "../outside.js" }),
+  ).rejects.toThrow(/outside/);
+  await expect(
+    writeBootstrap(config, { cwd: root, output: ".env" }),
+  ).rejects.toThrow(/\.js/);
+  await symlink(join(root, "public"), join(root, "linked"));
+  await expect(
+    writeBootstrap(config, { cwd: root, output: "linked/runtime.js" }),
+  ).rejects.toThrow(/symlink/);
+  expect(await readFile(join(root, "public/runtime-env.js"), "utf8")).toBe(
+    "// user script",
+  );
+});

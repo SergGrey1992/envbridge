@@ -1,8 +1,17 @@
 # @serggrey1992/next-runtime-env
 
-Типизированные runtime environment variables для Next.js App Router. Одна сборка приложения запускается с разными переменными окружения. Без Provider, Context, hooks, схем значений, преобразований и defaults. Все getters возвращают `string | undefined`.
+Типизированные runtime environment variables для Next.js App Router и обычного React SPA. Одна сборка приложения запускается с разными переменными окружения. Без Provider, Context, hooks, схем значений, преобразований и defaults. Все getters возвращают `string | undefined`.
 
 Подключение рассчитано на **Next.js 13.5.11+, 14.2.35+, 15.5.28+ и 16.2.9+**, App Router, React 18/19. Требуется **Node.js >=22.18** независимо от минимальных требований самого Next.js. Точные проверенные сочетания и результаты — в [матрице совместимости](docs/compatibility.md). Next.js 13.0–13.4 и Pages Router не входят в поддержку. Пакет не опубликован.
+
+## Выберите подключение
+
+| Приложение | Что подключать | Инструкция |
+|---|---|---|
+| Next.js 13–16 App Router | Node Route Handler + RuntimeEnvScript | [Next.js и .env по версиям](docs/nextjs.md) |
+| React SPA (проверено Vite, React18/19) | classic runtime-env.js до module entry | [Обычный React](docs/react.md) |
+
+Для React SPA Next.js устанавливать не требуется. Конфиг, generate и client getters общие. Команда `bootstrap` отдельно создаёт JS с публичными runtime-значениями; на Next.js её роль выполняет RuntimeEnvScript.
 
 ## Установка и конфигурация
 
@@ -140,6 +149,8 @@ export const variables = { get API() { return env.API_URL; } };
 
 Не подавляйте диагностические ошибки преобразованием в undefined. Endpoint возвращает `no-store` для браузера и CDN. Не добавляйте service worker/CDN кеширование. При смене окружения нужен полный reload документа.
 
+**Порядок .env одинаков на всех поддерживаемых ветках Next.js:** process.env → .env.<NODE_ENV>.local → .env.local (кроме test) → .env.<NODE_ENV> → .env. `KEY=` в приоритетном файле перекрывает непустое значение из общего .env. Dev использует development, build/start — production. Не требуется заполнять все файлы; подробности и корректный standalone запуск — в [руководстве Next.js](docs/nextjs.md).
+
 Проверяемые сценарии: обычный SSR, streaming, прямые/клиентские 404, notFound(), segment error, root/global error, reload ошибки, Retry и возврат к обычной странице. Детали — [результаты проверок](docs/verification.md).
 
 ## CLI и безопасность файлов
@@ -189,6 +200,7 @@ npm run prepare:example
 npm run test:consumer
 npx playwright install chromium
 npm run test:e2e
+npm run test:react
 npm run test:compat
 npm run test:static
 npm run test:example-dev

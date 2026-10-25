@@ -45,3 +45,7 @@ NRE_NEXT_VERSION=13.5.11 npm run test:compat
 Consumers создаются в игнорируемом .compat/ и изолированы от установленной в корне Next16. Порты3191–3194 используются последовательно. Для установленного браузера задайте PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH. NRE_OFFLINE=1 допустим только при заранее заполненном npm cache.
 
 GitHub Actions содержит матрицу всех строк на Node22 и24. Локальный результат не означает, что удалённый workflow уже прошёл: смотрите реальные GitHub checks после push.
+
+## React SPA и dotenv
+
+Next optional peer: отдельная поддержка обычного React описана в react.md, её результаты — react-results.json. Общая доставка snapshot не меняет Next API. Правила .env development/production/test, пустых overrides и standalone запуска для всех строк таблицы подробно описаны в nextjs.md.

@@ -35,3 +35,7 @@ CSP: RuntimeEnvScript принимает nonce; начальный inline script
 Node Route Handler обеспечивает runtime process.env на всех поддерживаемых ветках; Edge middleware старых Next.js не используется. createRuntimeEnvProxy сохранён для Node proxy Next.js 16 и делегирует тому же handler. Публичные getters, транспорт и формат snapshot едины. next.config.mjs читается старыми Next.js, в отличие от next.config.ts.
 
 Каждый consumer устанавливает реальный tarball, собственные Next/React и типы, без force/legacy-peer-deps. Одна положительная сборка запускается четыре раза: production A/B, standalone A/B. Отдельная отрицательная сборка проверяет server-only. Публичная матрица: compatibility.md.
+
+## React SPA
+
+Общая сериализация, classic bootstrap и Web Request handler вынесены в /runtime без Next/React imports. /next использует то же ядро и сохраняет прежние экспорты. Next — optional peer. В React CSR classic runtime-env.js выполняется до module entry; getters читают тот же snapshot, без Provider/hooks. CLI bootstrap явно пишет фактические public значения в этот файл при запуске/deployment; generate по-прежнему не пишет значения. Static hosting должен отдавать runtime-env.js/HTML с no-store; обновление файла требует reload существующих документов. server.ts остаётся Next-only, в SPA не импортируется.

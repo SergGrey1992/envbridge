@@ -24,3 +24,5 @@ CSP требует nonce на RuntimeEnvScript и script-src, а fallback — co
 Реальный standalone server проверяется browser тестами. Dockerfile предоставлен, запуск Docker engine отдельно отмечен в verification.md; тест standalone не равнозначен тесту Docker image.
 
 Для Next.js 13/14 параметр outputFileTracingRoot при необходимости задаётся в experimental; для Next.js 15/16 — на верхнем уровне Next config. В обычном отдельном приложении указывать его не обязательно. next.config.mjs подходит всем целевым версиям.
+
+Общие Next инструкции по версиям, порядок .env и отличие next start от standalone: nextjs.md. Для обычного React без Next используйте bootstrap при запуске/развёртывании и static JS с no-store: react.md.

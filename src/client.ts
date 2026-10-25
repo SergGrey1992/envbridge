@@ -1,7 +1,7 @@
 export class RuntimeEnvNotInitializedError extends Error {
   constructor() {
     super(
-      "Runtime environment is not initialized. Install RuntimeEnvScript and the runtime endpoint.",
+      "Runtime environment is not initialized. Load the runtime bootstrap before reading public variables.",
     );
     this.name = "RuntimeEnvNotInitializedError";
   }
