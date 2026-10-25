@@ -48,7 +48,8 @@
     "format:check": "prettier --check src tests scripts",
     "test:docker": "npm pack && node scripts/docker-e2e.mjs",
     "test:static": "node scripts/static-boundary.mjs",
-    "test:compat": "node scripts/test-compatibility.mjs"
+    "test:compat": "node scripts/test-compatibility.mjs",
+    "test:example-dev": "node scripts/example-dev.mjs"
   },
   "engines": {
     "node": ">=22.18.0"

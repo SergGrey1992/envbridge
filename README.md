@@ -190,6 +190,7 @@ npx playwright install chromium
 npm run test:e2e
 npm run test:compat
 npm run test:static
+npm run test:example-dev
 npm run test:docker
 npm pack
 ```

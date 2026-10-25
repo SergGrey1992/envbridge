@@ -67,3 +67,11 @@ CI настроен для Node 22 и 24 на Ubuntu, но удалённые Gi
 Все 5 строк в compatibility.md прошли реальные проверки: strict generated types, CLI/npm exec,20 production/standalone A/B browser прогонов и5 server-only negative builds. Node24.14.0 локально; Node22 и24 настроены в CI. Диапазоны имеют минимальные patch-версии и не означают поддержку любого Next13.0+. Случаи вне матрицы явно ограничены.
 
 Финальная проверка новой интеграции: npm run check —46 PASS,0 FAIL; npm run test:docker — новый image с Route Handler успешно проверен в двух окружениях, отчёт docker-results.json обновлён. Независимое ревью не обнаружило Important/Critical дефектов.
+
+## Видимые значения в примере — 25 октября 2026
+
+На главной добавлена подписанная таблица всех public getters с различимыми undefined и пустой строкой, а также SSR-чтение APP_NAME. По явному запросу пользователя значения server getters выводятся в stdout Next.js при рендере главной. Логирование находится только в примере, не в библиотеке.
+
+В Next16 dev исходный вариант console.info пересылался в консоль браузера — это воспроизведено отдельным падающим browser тестом. Поэтому диагностика использует process.stdout.write и node:util.inspect. Сохранённый test:example-dev подтверждает присутствие обоих server canary в терминале и отсутствие в HTML/RSC и browser console. Проверка PASS.
+
+Повторный npm run check:46 PASS, lint/typecheck/build/format PASS. Изолированный consumer Next16.2.9:4 production/standalone A/B прогона PASS с проверкой таблицы, обоих server logs, отсутствия значений в HTML/JS/browser console; server-only negative build PASS. Работающий пользовательский сервер и его .env не изменялись.

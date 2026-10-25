@@ -54,6 +54,7 @@ async function run(mode, label, port) {
   const name = `${label} русский`;
   const api = `https://example.com/${label}?x=\"'<>&</script>\nстрока\u2028\u2029`;
   const secret = `RUNTIME_SECRET_${label}_CANARY`;
+  const database = `postgresql://demo:DB_${label}_CANARY@localhost/runtime_demo`;
   const env = {
     ...process.env,
     PORT: String(port),
@@ -62,6 +63,7 @@ async function run(mode, label, port) {
     API_URL: api,
     NEXT_PUBLIC_TEST: `prefix-${label}`,
     JWT_SECRET: secret,
+    DATABASE_URL: database,
   };
   delete env.MISSING;
   const server = spawn(
@@ -104,6 +106,8 @@ async function run(mode, label, port) {
     const context = await browser.newContext();
     const page = await context.newPage();
     const hydration = [];
+    const browserMessages = [];
+    page.on("console", (message) => browserMessages.push(message.text()));
     page.setDefaultTimeout(10000);
     page.on("pageerror", (e) => {
       if (/hydrat|#418|#425/i.test(e.message)) hydration.push(e.message);
@@ -143,8 +147,17 @@ async function run(mode, label, port) {
       );
     }
     await home();
+    const publicTable = page.getByRole("table", {
+      name: "Публичные runtime-переменные",
+    });
+    for (const key of ["API_URL", "APP_NAME", "NEXT_PUBLIC_TEST", "MISSING"])
+      await publicTable.getByRole("row").filter({ hasText: key }).waitFor();
+    assert(log.includes("[next-runtime-env example] Server-only variables:"));
+    assert(log.includes(secret));
+    assert(log.includes(database));
     const html = await (await fetch(base)).text();
     assert(!html.includes(secret));
+    assert(!html.includes(database));
     assert(!html.includes("BUILD_VALUE"));
     await page.getByText("Missing", { exact: true }).click();
     await text("#missing", name);
@@ -199,6 +212,12 @@ async function run(mode, label, port) {
     await text("#stream", name);
     await text("#client", name);
     assert.deepEqual(hydration, []);
+    assert(
+      !browserMessages.some(
+        (message) => message.includes(secret) || message.includes(database),
+      ),
+    );
+    await scan(`${app}/.next/static`, Buffer.from(database));
     await scan(`${app}/.next/static`, Buffer.from(secret));
     await scan(`${app}/.next/static`, Buffer.from("BUILD_SECRET_CANARY"));
     await context.close();
