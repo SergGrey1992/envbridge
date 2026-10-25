@@ -42,7 +42,7 @@ Docker image собран через предоставленный Dockerfile �
 
 ## Ограничения
 
-Синхронный XHR нужен только при отсутствии snapshot; блокирует поток, deprecated и может быть запрещён browser/Permissions Policy. CSP требует script nonce и connect-src self. Static export, basePath, multi-zones, PPR/cacheComponents, Edge и Pages Router не поддерживаются MVP. Сам getter не делает статическую страницу динамической.
+Синхронный XHR нужен только при отсутствии snapshot; блокирует поток, deprecated и может быть запрещён browser/Permissions Policy. CSP требует script nonce и connect-src self. Static export, basePath, multi-zones, экспериментальный PPR Next 14/15, Edge и Pages Router не поддерживаются MVP. Сам getter не делает статическую страницу динамической.
 
 CI настроен для Node 22 и 24 на Ubuntu, но удалённые GitHub Actions в этой сессии не запускались. Локально проверены указанные выше macOS и Docker Linux версии. npm publish и GitHub release не выполнялись. Другие версии Next.js не заявлены.
 
@@ -95,3 +95,15 @@ CI настроен для Node 22 и 24 на Ubuntu, но удалённые Gi
 npm name @serggrey1992/envbridge, bin envbridge, tarball serggrey1992-envbridge-0.1.0.tgz, GitHub SergGrey1992/envbridge и локальная папка /Users/sergdia/Documents/ChatGPT/envbridge. Все импорты, оба примера, CLI, generated headers, Docker image и активные инструкции обновлены. Историческое specification.md сохранено с notice. Старые generated headers распознаются строго и мигрируют без ручного удаления.
 
 После переименования:58 unit/CLI тестов PASS; Next13–16 matrix20 browser runs +5negative builds PASS; React18/19 no-Next dev/production A/B PASS с новым tarball; Docker envbridge-example:local A/B PASS. Пользовательский Next example обновлён на новое имя пакета и успешно пересобран; .env и .idea не изменялись. Независимое read-only ревью не выявило Important/Critical дефектов. GitHub repo переименован с сохранением истории, origin обновлён на новый SSH URL.
+
+## Cache Components / partial prefetching
+
+`examples/next-cache-components` использует Next 16.4.3 и оба флага. После
+`npm pack` в корне и `npm install` внутри примера запустите из корня
+`npm run test:cache-components`. При необходимости задайте
+`PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`. Проверка собирает приложение с build-time
+canary, затем запускает одну сборку дважды с разными runtime env и проверяет
+браузерные значения, hydration, переход по Link, no-store обоих endpoint и
+отсутствие приватного canary в HTML/публичном bootstrap. Это отдельная проверка
+обычного Node production server; Docker/standalone и global-error этого нового
+примера пока не входят в неё.

@@ -1,0 +1,23 @@
+{
+  "name": "envbridge-cache-components-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build --webpack",
+    "start": "next start",
+    "generate": "envbridge generate --code-only"
+  },
+  "dependencies": {
+    "@serggrey1992/envbridge": "file:../../serggrey1992-envbridge-0.1.0.tgz",
+    "next": "16.4.3",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
+  }
+}

@@ -214,7 +214,7 @@ npm pack
 
 ## Ограничения и troubleshooting
 
-- MVP: Node runtime, App Router, корневой endpoint; `basePath`, multi-zones, Edge, static export, PPR/cacheComponents, Pages Router и версии Next.js вне указанной матрицы не поддерживаются.
+- MVP: Node runtime, App Router, корневой endpoint; `basePath`, multi-zones, Edge, static export, экспериментальный PPR Next 14/15, Pages Router и версии Next.js вне указанной матрицы не поддерживаются.
 - Статически сгенерированный HTML с env содержит build-time значения. Ни getters, ни endpoint не исправляют уже созданный HTML. Переведите страницы в динамический режим; не помещайте runtime-чтение в `use cache`.
 - Hydration mismatch: проверьте force-dynamic в layout и endpoint, положение bootstrap, совпадение окружений backend instances, отсутствие HTML кеша и мутаций process.env.
 - Bootstrap failed: проверьте `/__runtime-env` (200 JSON), Route Handler (папка `%5F_runtime-env`), исключение из middleware, CSP, auth redirect, CDN и доступность sync XHR.
@@ -223,3 +223,5 @@ npm pack
 - Ошибка перезаписи generated TS: выберите другой output или вручную перенесите свой файл; CLI не удаляет пользовательские файлы.
 
 Переход с прежнего имени пакета: [миграция в EnvBridge](docs/migration.md).
+
+Для Next.js 16 с `cacheComponents` и `partialPrefetching` есть [отдельный пример](examples/next-cache-components) и [инструкция по версиям](docs/nextjs.md).

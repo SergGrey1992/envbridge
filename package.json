@@ -56,7 +56,8 @@
     "test:compat": "node scripts/test-compatibility.mjs",
     "test:example-dev": "node scripts/example-dev.mjs",
     "prepare:example": "node examples/next-app/prepare.mjs",
-    "test:react": "node scripts/react-e2e.mjs"
+    "test:react": "node scripts/react-e2e.mjs",
+    "test:cache-components": "node scripts/cache-components-e2e.mjs"
   },
   "engines": {
     "node": ">=22.18.0"

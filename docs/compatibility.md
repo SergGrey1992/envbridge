@@ -30,7 +30,7 @@ Peers: `next: ^13.5.11 || ^14.2.35 || ^15.5.28 || ^16.2.9`, `react: ^18.2.0 || ^
 
 Это не обещание поддержки любого Next.js начиная с 13.0: 13.0–13.4,14.0–14.1,15.0–15.4 и patch-версии ниже указанных floors не входят в заявленный диапазон. App Router и Node runtime обязательны. Node>=22.18 — требование библиотеки, даже если сам старый Next допускает Node16/18.
 
-Pages Router, Edge, basePath/multi-zones, static export и cacheComponents/PPR остаются вне поддержки. Статический HTML с runtime getter сохраняет build-time значение: требуется динамический рендеринг. Sync XHR fallback в global-error имеет прежние ограничения CSP и browser policy. Совместимость с React18 не устраняет эти ограничения.
+Pages Router, Edge, basePath/multi-zones, static export и экспериментальный PPR Next 14/15 остаются вне поддержки. Для Cache Components на Next 16.4.3 есть отдельный [пример](../examples/next-cache-components) с внешним bootstrap и динамическими Suspense-границами; обычный force-dynamic layout для этого режима не подходит. Статический HTML с runtime getter сохраняет build-time значение: требуется динамический рендеринг. Sync XHR fallback в global-error имеет прежние ограничения CSP и browser policy. Совместимость с React18 не устраняет эти ограничения.
 
 ## Воспроизведение
 

@@ -6,9 +6,9 @@
 |---|---|---|---|
 | 13.5 /14.2 | Node Route Handler + RuntimeEnvScript | force-dynamic | next.config.mjs |
 | 15.5 | То же | force-dynamic; connection() необязательная альтернатива | .mjs или .ts |
-| 16 | То же; существующий Node proxy также поддерживается | force-dynamic; connection() необязательная альтернатива | .mjs или .ts |
+| 16 без cacheComponents | То же; существующий Node proxy также поддерживается | force-dynamic; connection() необязательная альтернатива | .mjs или .ts |
 
-## Подключение для всех версий
+## Next.js 13/14 и Next.js 15/16 без Cache Components
 
 ```ts
 // app/%5F_runtime-env/route.ts
@@ -33,6 +33,34 @@ export default function Layout({children}:{children:React.ReactNode}) {
 ```
 
 Библиотека не требует wrapper next.config. Для standalone достаточно export default {output:'standalone'} в next.config.mjs. На Next13/14 не переносите Node endpoint в Edge middleware: это другая среда выполнения. Bootstrap в layout обеспечивает начальную hydration; endpoint нужен для global-error без layout snapshot.
+
+## Next.js 16 с Cache Components / PPR
+
+Для `cacheComponents: true` используйте отдельный [готовый пример](../examples/next-cache-components).
+В нём нет `force-dynamic`: этот export несовместим с Cache Components.
+Статическая оболочка загружает обычный внешний `<script src="/__runtime-env.js" />`
+в head. Node endpoint вызывает `await connection()` и возвращает
+`createRuntimeEnvScript(config)` с JavaScript Content-Type и `no-store`.
+JSON fallback endpoint также вызывает `connection()` перед `createRuntimeEnvHandler(config)`.
+Основной API пакета остаётся тем же.
+
+Читающие env компоненты при SSR должны выполняться после `await connection()`
+под `Suspense`. Это относится и к Client Components: их начальный HTML рендерится
+на сервере. Не читайте getters в статической оболочке, `use cache` и на уровне модуля.
+Просто удалить `force-dynamic` из обычного примера недостаточно: можно сохранить
+build-time значения и получить расхождение hydration.
+
+| Режим | Пример |
+|---|---|
+| Next 13.5 / 14.2 | `next-app`: force-dynamic + inline RuntimeEnvScript |
+| Next 15.5 / 16 без cacheComponents | Тот же `next-app`; connection() возможен с Next 15 |
+| Next 16 с cacheComponents | `next-cache-components`: внешний bootstrap + connection() + Suspense |
+| Next 16.4.3 с partialPrefetching | Тот же пример с обоими флагами |
+
+`partialPrefetching` требует `cacheComponents`; в Next 16.2.9 такого параметра
+ещё нет. Пример с обоими флагами проверен на **16.4.3**: одна production-сборка,
+два запуска с разными env, hydration без ошибок и клиентская навигация.
+Это не расширяет проверенную матрицу на экспериментальный PPR в Next 14/15.
 
 ## Какой .env используется
 
@@ -91,6 +119,6 @@ npm run dev
 
 Сгенерированные getters уже закоммичены; predev/prebuild обновляют локальный tarball и кеш, не меняя ваш .env. На главной публичные значения показаны таблицей, server getters выводятся в терминал напрямую через stdout по запросу пользователя. RootError/Missing/NotFound намеренно проверяют ошибки.
 
-Список ограничений (Pages Router, Edge, static export, PPR/cacheComponents, basePath и прочее) и реальные browser/Docker результаты приведены в compatibility.md и verification.md.
+Список ограничений (Pages Router, Edge, static export, экспериментальный PPR Next 14/15, basePath и прочее) и реальные browser/Docker результаты приведены в compatibility.md и verification.md.
 
 Источники: [Next env](https://nextjs.org/docs/app/guides/environment-variables), [standalone output](https://nextjs.org/docs/app/api-reference/config/next-config-js/output).
