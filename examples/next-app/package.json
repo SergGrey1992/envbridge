@@ -10,7 +10,7 @@
     "dev": "next dev"
   },
   "dependencies": {
-    "@serggrey1992/envbridge": "file:../../serggrey1992-envbridge-0.1.0.tgz",
+    "@serggrey1992/envbridge": "file:../../serggrey1992-envbridge-0.1.1.tgz",
     "next": "16.2.9",
     "react": "19.2.7",
     "react-dom": "19.2.7"

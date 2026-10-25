@@ -2,7 +2,7 @@
 
 Пакет: `@serggrey1992/envbridge`. CLI: `envbridge`. Репозиторий: https://github.com/SergGrey1992/envbridge. Локальная папка проекта — envbridge.
 
-Прежнее имя — @serggrey1992/next-runtime-env, прежняя CLI-команда — next-runtime-env. Установка из npm: npm install @serggrey1992/envbridge. Для локальной разработки используйте tarball serggrey1992-envbridge-0.1.0.tgz из npm pack.
+Прежнее имя — @serggrey1992/next-runtime-env, прежняя CLI-команда — next-runtime-env. Установка из npm: npm install @serggrey1992/envbridge. Для локальной разработки используйте tarball serggrey1992-envbridge-0.1.1.tgz из npm pack.
 
 ## Обновление существующего приложения
 
@@ -18,7 +18,7 @@ runtime.config.ts, каталог runtime-env, файл runtime-env.js и фун
 
 ## Понятные маршруты вместо закодированных папок
 
-Изменение пока доступно в исходниках и локальном tarball; npm 0.1.0 использует прежний адрес.
+Начиная с 0.1.1 используются новые адреса. Версия 0.1.0 использует прежний адрес.
 
 Новые примеры используют `app/runtime-env/route.ts` → `/runtime-env` и
 `app/runtime-env/bootstrap/route.ts` → `/runtime-env/bootstrap`. При обновлении

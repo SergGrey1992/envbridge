@@ -22,7 +22,7 @@ if (inCheckout) {
   )[0];
   const temporary = mkdtempSync(join(tmpdir(), "envbridge-example-"));
   try {
-    // A unique path prevents npm reusing an older tarball with the same 0.1.0 filename.
+    // A unique path prevents npm reusing an older tarball with the same version filename.
     const archive = join(temporary, basename(packed.filename));
     cpSync(join(root, packed.filename), archive);
     rmSync(join(app, "node_modules/@serggrey1992/envbridge"), {

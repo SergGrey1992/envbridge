@@ -67,7 +67,7 @@ export const env = {
 
 Ниже подключение для Next.js 13–16 без Cache Components. Для `cacheComponents: true` используйте [готовый пример](examples/next-cache-components). Обёртка next.config не требуется.
 
-> Новые адреса `/runtime-env` доступны в исходниках репозитория и локальном tarball. Опубликованная npm-версия 0.1.0 использует прежний адрес; переход описан в [migration.md](docs/migration.md).
+> Начиная с версии 0.1.1 используются понятные адреса `/runtime-env` и `/runtime-env/bootstrap`. При обновлении с 0.1.0 перенесите обработчик; переход описан в [migration.md](docs/migration.md).
 
 ```ts
 // app/runtime-env/route.ts
