@@ -44,12 +44,13 @@
     "test:consumer": "node scripts/consumer.mjs",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build",
     "prepack": "npm run build",
-    "format": "prettier --write src tests scripts examples/next-app/app examples/next-app/*.ts",
-    "format:check": "prettier --check src tests scripts",
+    "format": "prettier --write src tests scripts examples/next-app/app examples/next-app/*.ts examples/next-app/prepare.mjs",
+    "format:check": "prettier --check src tests scripts examples/next-app/prepare.mjs",
     "test:docker": "npm pack && node scripts/docker-e2e.mjs",
     "test:static": "node scripts/static-boundary.mjs",
     "test:compat": "node scripts/test-compatibility.mjs",
-    "test:example-dev": "node scripts/example-dev.mjs"
+    "test:example-dev": "node scripts/example-dev.mjs",
+    "prepare:example": "node examples/next-app/prepare.mjs"
   },
   "engines": {
     "node": ">=22.18.0"

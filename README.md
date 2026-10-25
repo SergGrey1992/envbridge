@@ -185,6 +185,7 @@ APP_NAME=Production API_URL=https://api.example.com node .next/standalone/server
 ```sh
 npm ci
 npm run check
+npm run prepare:example
 npm run test:consumer
 npx playwright install chromium
 npm run test:e2e

@@ -75,3 +75,9 @@ CI настроен для Node 22 и 24 на Ubuntu, но удалённые Gi
 В Next16 dev исходный вариант console.info пересылался в консоль браузера — это воспроизведено отдельным падающим browser тестом. Поэтому диагностика использует process.stdout.write и node:util.inspect. Сохранённый test:example-dev подтверждает присутствие обоих server canary в терминале и отсутствие в HTML/RSC и browser console. Проверка PASS.
 
 Повторный npm run check:46 PASS, lint/typecheck/build/format PASS. Изолированный consumer Next16.2.9:4 production/standalone A/B прогона PASS с проверкой таблицы, обоих server logs, отсутствия значений в HTML/JS/browser console; server-only negative build PASS. Работающий пользовательский сервер и его .env не изменялись.
+
+## Обновление локальной зависимости примера — 25 октября 2026
+
+В реальном examples/next-app воспроизведён отсутствующий createRuntimeEnvHandler: установленный tarball содержал прежний dist/next.d.ts. После замены пакета TypeScript прошёл, но webpack повторно взял старый module snapshot. Добавлен prepare.mjs: npm pack актуальной библиотеки, установка через уникальный временный путь без изменения package.json/.env и сброс только .next/cache и tsconfig.tsbuildinfo. prebuild/predev запускают подготовку автоматически; root prepare:example доступен вручную. Проверка exports останавливает запуск с понятным сообщением при старом пакете вне source checkout.
+
+Повторён именно npm run build пользовательского examples/next-app с автоматическим prebuild: компиляция, TypeScript, page data и standalone build PASS, без прежней ошибки или import warning. В CI добавлена подготовка локального примера; совместимые consumers копируют helper. Библиотечный API не менялся.

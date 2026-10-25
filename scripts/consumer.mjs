@@ -32,6 +32,7 @@ export function prepareConsumer() {
     cpSync(`${example}/app`, `${app}/app`, { recursive: true });
     for (const file of [
       "runtime.config.ts",
+      "prepare.mjs",
       "next.config.mjs",
       "tsconfig.json",
       "types.test.ts",
