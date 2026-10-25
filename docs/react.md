@@ -20,7 +20,7 @@ npm install @serggrey1992/envbridge
 npx envbridge generate
 ```
 
-После публикации установка выполняется из npm; до публикации установите tarball из npm pack. Generate создаёт имена/getters и пустые .env-шаблоны. Он не копирует значения в TS. Сгенерированный server.ts предназначен для Next Server Components и в SPA не импортируется. В обычном React нет серверных компонентов; секреты должны оставаться в вашем backend.
+Для локальной разработки библиотеки можно установить tarball из npm pack. Generate создаёт имена/getters и пустые .env-шаблоны. Он не копирует значения в TS. Сгенерированный server.ts предназначен для Next Server Components и в SPA не импортируется. В обычном React нет серверных компонентов; секреты должны оставаться в вашем backend.
 
 ## 2. Bootstrap до запуска приложения
 

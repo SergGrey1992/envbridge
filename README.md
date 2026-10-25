@@ -2,7 +2,7 @@
 
 Типизированные runtime environment variables для Next.js App Router и обычного React SPA. Одна сборка приложения запускается с разными переменными окружения. Без Provider, Context, hooks, схем значений, преобразований и defaults. Все getters возвращают `string | undefined`.
 
-Подключение рассчитано на **Next.js 13.5.11+, 14.2.35+, 15.5.28+ и 16.2.9+**, App Router, React 18/19. Требуется **Node.js >=22.18** независимо от минимальных требований самого Next.js. Точные проверенные сочетания и результаты — в [матрице совместимости](docs/compatibility.md). Next.js 13.0–13.4 и Pages Router не входят в поддержку. Пакет не опубликован.
+Подключение рассчитано на **Next.js 13.5.11+, 14.2.35+, 15.5.28+ и 16.2.9+**, App Router, React 18/19. Требуется **Node.js >=22.18** независимо от минимальных требований самого Next.js. Точные проверенные сочетания и результаты — в [матрице совместимости](docs/compatibility.md). Next.js 13.0–13.4 и Pages Router не входят в поддержку.
 
 npm-пакет: `@serggrey1992/envbridge` · CLI: `envbridge` · [репозиторий](https://github.com/SergGrey1992/envbridge)
 
@@ -17,7 +17,7 @@ npm-пакет: `@serggrey1992/envbridge` · CLI: `envbridge` · [репозит
 
 ## Установка и конфигурация
 
-После публикации: `npm install @serggrey1992/envbridge`. Для локальной проверки используйте tarball из `npm pack`.
+Установка: `npm install @serggrey1992/envbridge`. Для локальной проверки используйте tarball из `npm pack`.
 
 ```ts
 // runtime.config.ts

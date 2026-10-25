@@ -11,7 +11,7 @@
     "LICENSE"
   ],
   "bin": {
-    "envbridge": "dist/cli.js"
+    "envbridge": "./dist/cli.js"
   },
   "exports": {
     "./config": {
@@ -95,5 +95,17 @@
   "homepage": "https://github.com/SergGrey1992/envbridge#readme",
   "bugs": {
     "url": "https://github.com/SergGrey1992/envbridge/issues"
-  }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "env",
+    "runtime",
+    "react",
+    "nextjs",
+    "vite",
+    "typescript"
+  ]
 }

@@ -2,7 +2,7 @@
 
 Пакет: `@serggrey1992/envbridge`. CLI: `envbridge`. Репозиторий: https://github.com/SergGrey1992/envbridge. Локальная папка проекта — envbridge.
 
-Прежнее имя — @serggrey1992/next-runtime-env, прежняя CLI-команда — next-runtime-env. Пакет ещё не опубликован в npm, поэтому сейчас устанавливайте tarball serggrey1992-envbridge-0.1.0.tgz из npm pack.
+Прежнее имя — @serggrey1992/next-runtime-env, прежняя CLI-команда — next-runtime-env. Установка из npm: npm install @serggrey1992/envbridge. Для локальной разработки используйте tarball serggrey1992-envbridge-0.1.0.tgz из npm pack.
 
 ## Обновление существующего приложения
 
