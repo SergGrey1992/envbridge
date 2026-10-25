@@ -2,7 +2,7 @@
 
 Типизированные runtime environment variables для Next.js App Router. Одна сборка приложения запускается с разными переменными окружения. Без Provider, Context, hooks, схем значений, преобразований и defaults. Все getters возвращают `string | undefined`.
 
-MVP проверен на **Next.js 16.2.9, React 19.2.7, Node.js 24.14.0, Chromium**. Требуется Node.js >=22.18; другие версии Next.js пока не заявлены как проверенные. Пакет не опубликован.
+Подключение рассчитано на **Next.js 13.5.11+, 14.2.35+, 15.5.28+ и 16.2.9+**, App Router, React 18/19. Требуется **Node.js >=22.18** независимо от минимальных требований самого Next.js. Точные проверенные сочетания и результаты — в [матрице совместимости](docs/compatibility.md). Next.js 13.0–13.4 и Pages Router не входят в поддержку. Пакет не опубликован.
 
 ## Установка и конфигурация
 
@@ -54,35 +54,44 @@ export const env = {
 
 ## Обязательная интеграция Next.js
 
-```ts
-// next.config.ts
-import type { NextConfig } from 'next';
-const nextConfig: NextConfig = { output: 'standalone' };
-export default nextConfig;
-```
-
-Библиотека не требует обёртки next.config.ts. Подключение состоит из двух точек: proxy.ts и RuntimeEnvScript в корневом layout.
+Для всех поддерживаемых версий одинаково нужны Node Route Handler и скрипт в корневом layout. Обёртка next.config не требуется.
 
 ```ts
-// proxy.ts — рядом с app, либо src/proxy.ts при src/app
-import { createRuntimeEnvProxy } from '@serggrey1992/next-runtime-env/next';
-import runtimeConfig from './runtime.config';
-export const proxy = createRuntimeEnvProxy(runtimeConfig);
-export const config = { matcher: '/__runtime-env' };
+// app/%5F_runtime-env/route.ts
+import { createRuntimeEnvHandler } from '@serggrey1992/next-runtime-env/next';
+import runtimeConfig from '../../runtime.config';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const GET = createRuntimeEnvHandler(runtimeConfig);
+export const HEAD = GET;
 ```
 
-При существующем proxy вызовите обработчик библиотеки первым и верните его Response, если он есть; иначе продолжайте свою логику. Добавьте `/__runtime-env` в существующий **литеральный** matcher. Endpoint должен быть доступен без авторизации и редиректов.
+**Имя папки именно `%5F_runtime-env`**: Next.js преобразует `%5F` в `_`, и URL становится `/__runtime-env`. Папка `__runtime-env` напрямую считается private и не создаёт маршрут. При структуре src/app разместите файл там и скорректируйте путь импорта конфига.
 
 ```tsx
 // app/layout.tsx — Server Component
-import { connection } from 'next/server';
 import { RuntimeEnvScript } from '@serggrey1992/next-runtime-env/next';
 import runtimeConfig from '../runtime.config';
-export default async function Layout({ children }: { children: React.ReactNode }) {
-  await connection(); // runtime SSR вместо фиксации значений при next build
+
+export const dynamic = 'force-dynamic';
+
+export default function Layout({ children }: { children: React.ReactNode }) {
   return <html><head><RuntimeEnvScript config={runtimeConfig} /></head><body>{children}</body></html>;
 }
 ```
+
+`force-dynamic` поддерживается всеми целевыми версиями. На Next.js 15/16 можно вместо него использовать `await connection()` до рендера env-компонентов, но для единого подключения это не требуется.
+
+Обычный Next config нужен лишь для собственных настроек приложения, например:
+
+```js
+// next.config.mjs — совместим с Next.js 13–16
+/** @type {import('next').NextConfig} */
+export default { output: 'standalone' };
+```
+
+**Если вы уже используете createRuntimeEnvProxy на Next.js 16**, его можно оставить: API сохранён. Новый Route Handler заменяет proxy.ts, создавать одновременно оба endpoint не нужно. Не переносите старый proxy в Edge middleware Next.js 13/14: для гарантированного runtime-чтения используйте Node Route Handler. Endpoint должен обходить middleware авторизации, редиректы и кеш CDN.
 
 При CSP передайте nonce: `<RuntimeEnvScript config={runtimeConfig} nonce={nonce} />`. Разрешите nonce в `script-src`, а `'self'` в `connect-src`.
 
@@ -118,7 +127,7 @@ export const variables = { get API() { return env.API_URL; } };
 
 На сервере public getter читает `process.env[key]` при каждом обращении. В браузере он читает снимок текущего документа, созданный bootstrap до hydration. Не меняйте process.env во время работы процесса: согласованность отдельных запросов при такой мутации не гарантируется.
 
-`RuntimeEnvScript` должен находиться в head динамического root layout, до hydration. Runtime-чтение требует `await connection()` до рендера использующих env компонентов (либо корректного force-dynamic в соответствующем сегменте). Ленивый getter сам не переводит страницу в динамический режим.
+`RuntimeEnvScript` должен находиться в head динамического root layout, до hydration. Для одинакового подключения на Next.js 13–16 задайте `export const dynamic = 'force-dynamic'` в root layout. На Next.js 15/16 альтернативой служит `await connection()` до рендера использующих env компонентов. Ленивый getter сам не переводит страницу в динамический режим.
 
 `global-error.tsx` заменяет root layout. При прямой ошибке root layout скрипт может отсутствовать. Поэтому первое браузерное чтение при отсутствии снимка **один раз делает синхронный XHR** к `/__runtime-env`, получает только public allowlist и сохраняет снимок. Последующие чтения и переходы сетевых запросов не требуют. Существующий снимок сохраняется при клиентском переходе на error boundary.
 
@@ -179,19 +188,20 @@ npm run check
 npm run test:consumer
 npx playwright install chromium
 npm run test:e2e
+npm run test:compat
 npm run test:static
 npm run test:docker
 npm pack
 ```
 
-Для уже установленного Chromium можно задать `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`. Тесты используют порты 3191–3197. Docker-проверка требует работающий Docker engine. `test:e2e` собирает положительный consumer один раз и запускает его с двумя окружениями в обычном и standalone режимах. Отдельная отрицательная сборка подтверждает запрет server-only в Client Component. CI ничего не публикует и не создаёт release.
+Для уже установленного Chromium можно задать `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`. Тесты используют порты 3191–3197. Docker-проверка требует работающий Docker engine. `test:e2e` собирает положительный consumer один раз и запускает его с двумя окружениями в обычном и standalone режимах. Отдельная отрицательная сборка подтверждает запрет server-only в Client Component. `test:compat` повторяет этот цикл в независимых consumers с разными Next.js/React; можно выбрать одну строку через `NRE_NEXT_VERSION=13.5.11 npm run test:compat`. CI ничего не публикует и не создаёт release.
 
 ## Ограничения и troubleshooting
 
-- MVP: Node runtime, App Router, корневой endpoint; `basePath`, multi-zones, Edge, static export, PPR/cacheComponents, Pages Router и другие версии Next не проверены и не поддерживаются в этом MVP.
-- Статически сгенерированный HTML с env содержит build-time значения. Ни getters, ни proxy не исправляют уже созданный HTML. Переведите страницы в динамический режим; не помещайте runtime-чтение в `use cache`.
-- Hydration mismatch: проверьте connection(), положение bootstrap, совпадение окружений backend instances, отсутствие HTML кеша и мутаций process.env.
-- Bootstrap failed: проверьте `/__runtime-env` (200 JSON), matcher proxy, CSP, auth redirect, CDN и доступность sync XHR.
+- MVP: Node runtime, App Router, корневой endpoint; `basePath`, multi-zones, Edge, static export, PPR/cacheComponents, Pages Router и версии Next.js вне указанной матрицы не поддерживаются.
+- Статически сгенерированный HTML с env содержит build-time значения. Ни getters, ни endpoint не исправляют уже созданный HTML. Переведите страницы в динамический режим; не помещайте runtime-чтение в `use cache`.
+- Hydration mismatch: проверьте force-dynamic в layout и endpoint, положение bootstrap, совпадение окружений backend instances, отсутствие HTML кеша и мутаций process.env.
+- Bootstrap failed: проверьте `/__runtime-env` (200 JSON), Route Handler (папка `%5F_runtime-env`), исключение из middleware, CSP, auth redirect, CDN и доступность sync XHR.
 - Пустая строка вместо undefined: generated `.env` содержит `KEY=`, это существующее пустое значение. Удалите строку, если переменная действительно должна отсутствовать.
 - После смены окружения старые значения: выполните полный reload и уберите кеширование HTML/endpoint.
 - Ошибка перезаписи generated TS: выберите другой output или вручную перенесите свой файл; CLI не удаляет пользовательские файлы.

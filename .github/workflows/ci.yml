@@ -21,3 +21,26 @@ jobs:
       - run: npm run test:docker
         if: matrix.node == 24
       - run: npm pack --dry-run
+
+  compatibility:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+        next: ['13.5.11', '14.2.35', '15.5.28', '16.2.9', '16.4.3']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:compat
+        env:
+          NRE_NEXT_VERSION: ${{ matrix.next }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: compatibility-next-${{ matrix.next }}-node-${{ matrix.node }}
+          path: docs/compatibility/next-${{ matrix.next }}.json

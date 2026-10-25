@@ -10,3 +10,5 @@ playwright-report/
 # Fixture depends on a tarball whose integrity changes during local development.
 examples/next-app/package-lock.json
 **/*.tsbuildinfo
+
+.compat/

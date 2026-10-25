@@ -33,13 +33,12 @@ export function RuntimeEnvScript({
     dangerouslySetInnerHTML: { __html: source },
   });
 }
-/** Return undefined for non-runtime paths to allow composing existing proxy logic. */
-export function createRuntimeEnvProxy(
+/** Node.js App Router endpoint. Mount at /__runtime-env with force-dynamic. */
+export function createRuntimeEnvHandler(
   config: RuntimeConfig,
-): (request: Request) => Response | undefined {
+): (request: Request) => Response {
   const resolved = defineRuntimeConfig(config);
   return (request) => {
-    if (new URL(request.url).pathname !== "/__runtime-env") return undefined;
     const headers = {
       "Cache-Control": "no-store, max-age=0",
       "CDN-Cache-Control": "no-store",
@@ -59,4 +58,14 @@ export function createRuntimeEnvProxy(
       { headers },
     );
   };
+}
+/** Optional Next.js 16 Node proxy adapter; do not use in Edge middleware. */
+export function createRuntimeEnvProxy(
+  config: RuntimeConfig,
+): (request: Request) => Response | undefined {
+  const handler = createRuntimeEnvHandler(config);
+  return (request) =>
+    new URL(request.url).pathname === "/__runtime-env"
+      ? handler(request)
+      : undefined;
 }

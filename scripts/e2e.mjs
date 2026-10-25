@@ -1,11 +1,15 @@
 import { spawn, execFileSync } from "node:child_process";
 import { once } from "node:events";
-import { fileURLToPath } from "node:url";
 import { cp, readdir, readFile, writeFile, rm, rename } from "node:fs/promises";
 import assert from "node:assert/strict";
 import { chromium } from "@playwright/test";
-import { prepareConsumer } from "./consumer.mjs";
-const app = fileURLToPath(new URL("../examples/next-app", import.meta.url));
+import {
+  prepareConsumer,
+  consumerApp,
+  consumerNext,
+  buildArguments,
+} from "./consumer.mjs";
+const app = consumerApp;
 prepareConsumer();
 // Deployment supplies process env; generated empty .env entries are real empty strings.
 for (const file of [
@@ -25,7 +29,7 @@ const builtEnv = {
 };
 execFileSync(
   process.execPath,
-  ["node_modules/next/dist/bin/next", "build", "--webpack"],
+  ["node_modules/next/dist/bin/next", ...buildArguments],
   { cwd: app, env: builtEnv, stdio: "inherit" },
 );
 await cp(`${app}/.next/static`, `${app}/.next/standalone/.next/static`, {
@@ -109,7 +113,20 @@ async function run(mode, label, port) {
         hydration.push(m.text());
     });
     async function text(selector, expected) {
-      await page.locator(selector).filter({ hasText: expected }).waitFor();
+      try {
+        await page.locator(selector).filter({ hasText: expected }).waitFor();
+      } catch (error) {
+        console.error("E2E state", {
+          version: consumerNext,
+          mode,
+          label,
+          selector,
+          url: page.url(),
+          body: await page.locator("body").innerText(),
+          server: log,
+        });
+        throw error;
+      }
       assert.equal(await page.locator(selector).textContent(), expected);
     }
     async function home() {
@@ -217,7 +234,7 @@ try {
   try {
     execFileSync(
       process.execPath,
-      ["node_modules/next/dist/bin/next", "build", "--webpack"],
+      ["node_modules/next/dist/bin/next", ...buildArguments],
       { cwd: app, encoding: "utf8", stdio: "pipe" },
     );
   } catch (e) {
@@ -233,11 +250,21 @@ try {
   await rm(`${app}/.next`, { recursive: true, force: true });
   await rename(`${app}/.next-positive`, `${app}/.next`);
 }
+await import("node:fs/promises").then((fs) =>
+  fs.mkdir(new URL("../docs/compatibility", import.meta.url), {
+    recursive: true,
+  }),
+);
 await writeFile(
-  new URL("../docs/e2e-results.json", import.meta.url),
+  new URL(
+    process.env.NRE_NEXT_VERSION
+      ? `../docs/compatibility/next-${consumerNext}.json`
+      : "../docs/e2e-results.json",
+    import.meta.url,
+  ),
   JSON.stringify(
     {
-      next: "16.2.9",
+      next: consumerNext,
       buildOnceRunTwice: true,
       runs: reports,
       serverOnlyNegativeBuild: "PASS",

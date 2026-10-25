@@ -5,7 +5,11 @@ import {
   RuntimeEnvBootstrapError,
   RuntimeEnvNotInitializedError,
 } from "../src/client.js";
-import { serializePublicEnv, createRuntimeEnvProxy } from "../src/next.js";
+import {
+  serializePublicEnv,
+  createRuntimeEnvProxy,
+  createRuntimeEnvHandler,
+} from "../src/next.js";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -135,4 +139,37 @@ it("preserves initialized empty strings", () => {
     __NEXT_RUNTIME_ENV__: { version: 1, values: { EMPTY: "" } },
   });
   expect(getPublicEnv("EMPTY")).toBe("");
+});
+
+it("route handler reads public values at request time without exposing secrets", async () => {
+  const handler = createRuntimeEnvHandler(
+    defineRuntimeConfig({
+      public: ["APP_NAME", "MISSING"],
+      server: ["SECRET"],
+    }),
+  );
+  vi.stubEnv("APP_NAME", "first");
+  vi.stubEnv("SECRET", "secret-canary");
+  const first = handler(new Request("http://localhost/__runtime-env"));
+  expect(first.headers.get("cache-control")).toContain("no-store");
+  expect(first.headers.get("cdn-cache-control")).toBe("no-store");
+  expect(first.headers.get("access-control-allow-origin")).toBeNull();
+  expect(await first.json()).toEqual({
+    version: 1,
+    values: { APP_NAME: "first", MISSING: null },
+  });
+  vi.stubEnv("APP_NAME", "second");
+  expect(
+    await handler(new Request("http://localhost/__runtime-env")).text(),
+  ).toContain("second");
+  const head = handler(
+    new Request("http://localhost/__runtime-env", { method: "HEAD" }),
+  );
+  expect(head.status).toBe(200);
+  expect(await head.text()).toBe("");
+  const post = handler(
+    new Request("http://localhost/__runtime-env", { method: "POST" }),
+  );
+  expect(post.status).toBe(405);
+  expect(post.headers.get("allow")).toBe("GET, HEAD");
 });

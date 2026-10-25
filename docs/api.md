@@ -6,6 +6,6 @@
 
 `/server`: `getServerEnv(key): string | undefined`, защищён server-only и проверкой браузерного исполнения. Не экспортируйте его результат клиенту.
 
-`/next`: `RuntimeEnvScript({config,nonce?})` — server-rendered bootstrap. `createRuntimeEnvProxy(config)` возвращает `(Request) => Response | undefined`; undefined означает другой путь. HEAD не имеет тела, GET возвращает JSON, прочие методы 405. `serializePublicEnv(config)` — безопасно экранированный JSON только allowlist, используется bootstrap/endpoint.
+`/next`: `RuntimeEnvScript({config,nonce?})` — server-rendered bootstrap. `createRuntimeEnvHandler(config)` возвращает `(Request) => Response` для Node Route Handler на Next.js 13–16. Сам handler не включает dynamic rendering: файл route.ts должен экспортировать `runtime = 'nodejs'` и `dynamic = 'force-dynamic'`. `createRuntimeEnvProxy(config)` — сохранённый адаптер для Node proxy Next.js 16, возвращает `(Request) => Response | undefined`; undefined означает другой путь. HEAD не имеет тела, GET возвращает JSON, прочие методы 405. `serializePublicEnv(config)` — безопасно экранированный JSON только allowlist, используется bootstrap/endpoint.
 
 Generated env — объект с ленивыми accessors и точными именами из конфига. Каждый getter возвращает string | undefined; undefined в JSON транспортируется как null, затем восстанавливается. Пользователь не должен зависеть от внутренних window свойств.

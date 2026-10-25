@@ -8,11 +8,11 @@
 
 Выбран снимок публичного allowlist в inline script серверного RuntimeEnvScript в head. Это простой script, выполняемый HTML-парсером до hydration. Сервер читает process.env[key] динамически; браузер читает неизменяемый снимок. Никаких значений в generated TS.
 
-Дополнительный публичный integration point: proxy.ts с createRuntimeEnvProxy(config). Он обслуживает /__runtime-env без кеширования. В global-error при отсутствии snapshot getter один раз синхронно загружает JSON с этого endpoint. Это осознанный компромисс: sync XHR блокирует поток, deprecated браузерами и требует connect-src 'self'. Ошибка загрузки диагностируется исключением, никогда не undefined. Пользователь без этого ограничения должен использовать асинхронный UI API, который выходит за согласованное ТЗ.
+Дополнительный публичный integration point: Node Route Handler app/%5F_runtime-env/route.ts с createRuntimeEnvHandler(config). Он обслуживает /__runtime-env без кеширования. В global-error при отсутствии snapshot getter один раз синхронно загружает JSON с этого endpoint. Это осознанный компромисс: sync XHR блокирует поток, deprecated браузерами и требует connect-src 'self'. Ошибка загрузки диагностируется исключением, никогда не undefined. Пользователь без этого ограничения должен использовать асинхронный UI API, который выходит за согласованное ТЗ.
 
-Обёртка next.config.ts не требуется. Обязательные точки интеграции: proxy.ts и RuntimeEnvScript в root head. Нет mutations внутренних файлов, instrumentation и webpack plugins.
+Обёртка next.config.ts не требуется. Обязательные точки интеграции: Node Route Handler и RuntimeEnvScript в root head. Нет mutations внутренних файлов, instrumentation и webpack plugins.
 
-Root layout вызывает await connection() перед рендером snapshot. Страницы, читающие runtime значения, должны быть динамическими. Статический HTML и output: export не поддерживают runtime SSR. Отдельные server/client запросы читают один process environment; изменение process.env во время запроса не поддерживается. Клиентский snapshot живёт до reload; для другого окружения перезагрузить документ.
+Root layout и endpoint объявляют dynamic = force-dynamic; это одинаково работает на Next.js 13–16. На Next.js 15/16 connection() остаётся необязательной альтернативой для динамического layout. Страницы, читающие runtime значения, должны быть динамическими. Статический HTML и output: export не поддерживают runtime SSR. Отдельные server/client запросы читают один process environment; изменение process.env во время запроса не поддерживается. Клиентский snapshot живёт до reload; для другого окружения перезагрузить документ.
 
 ## Безопасность
 
@@ -29,3 +29,9 @@ CSP: RuntimeEnvScript принимает nonce; начальный inline script
 - https://nextjs.org/docs/app/api-reference/config/next-config-js/output
 
 Матрица фактически выполненных проверок хранится в verification.md; наличие теста не считается его прохождением.
+
+## Совместимость версий
+
+Node Route Handler обеспечивает runtime process.env на всех поддерживаемых ветках; Edge middleware старых Next.js не используется. createRuntimeEnvProxy сохранён для Node proxy Next.js 16 и делегирует тому же handler. Публичные getters, транспорт и формат snapshot едины. next.config.mjs читается старыми Next.js, в отличие от next.config.ts.
+
+Каждый consumer устанавливает реальный tarball, собственные Next/React и типы, без force/legacy-peer-deps. Одна положительная сборка запускается четыре раза: production A/B, standalone A/B. Отдельная отрицательная сборка проверяет server-only. Публичная матрица: compatibility.md.

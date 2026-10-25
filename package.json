@@ -47,7 +47,8 @@
     "format": "prettier --write src tests scripts examples/next-app/app examples/next-app/*.ts",
     "format:check": "prettier --check src tests scripts",
     "test:docker": "npm pack && node scripts/docker-e2e.mjs",
-    "test:static": "node scripts/static-boundary.mjs"
+    "test:static": "node scripts/static-boundary.mjs",
+    "test:compat": "node scripts/test-compatibility.mjs"
   },
   "engines": {
     "node": ">=22.18.0"
@@ -57,8 +58,8 @@
     "server-only": "^0.0.1"
   },
   "peerDependencies": {
-    "next": "16.2.9",
-    "react": "19.2.7"
+    "next": "^13.5.11 || ^14.2.35 || ^15.5.28 || ^16.2.9",
+    "react": "^18.2.0 || ^19.0.0"
   },
   "devDependencies": {
     "next": "16.2.9",

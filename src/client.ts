@@ -1,7 +1,7 @@
 export class RuntimeEnvNotInitializedError extends Error {
   constructor() {
     super(
-      "Runtime environment is not initialized. Install RuntimeEnvScript and the runtime proxy.",
+      "Runtime environment is not initialized. Install RuntimeEnvScript and the runtime endpoint.",
     );
     this.name = "RuntimeEnvNotInitializedError";
   }
@@ -9,7 +9,7 @@ export class RuntimeEnvNotInitializedError extends Error {
 export class RuntimeEnvBootstrapError extends Error {
   constructor() {
     super(
-      "Runtime environment bootstrap failed. Check the proxy endpoint, CSP, authentication and network.",
+      "Runtime environment bootstrap failed. Check the runtime endpoint, CSP, authentication and network.",
     );
     this.name = "RuntimeEnvBootstrapError";
   }
