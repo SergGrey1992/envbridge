@@ -72,10 +72,10 @@ try {
       await page.getByRole("link", { name: "Other page" }).click();
       await page.waitForURL("**/other");
       assert.equal(await page.locator("#client:visible").textContent(), value);
-      const snapshot = await fetch("http://localhost:3215/__runtime-env");
+      const snapshot = await fetch("http://localhost:3215/runtime-env");
       assert.match(snapshot.headers.get("cache-control"), /no-store/);
       assert.equal((await snapshot.json()).values.APP_NAME, value);
-      const script = await fetch("http://localhost:3215/__runtime-env.js");
+      const script = await fetch("http://localhost:3215/runtime-env/bootstrap");
       assert.match(script.headers.get("cache-control"), /no-store/);
       assert(!(await script.text()).includes("PRIVATE_CANARY"));
       assert.deepEqual(errors, []);

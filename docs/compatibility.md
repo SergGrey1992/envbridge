@@ -17,12 +17,12 @@
 ## Подключение одинаково для всех строк
 
 1. Конфиг runtime.config.ts и envbridge generate.
-2. Node Route Handler в app/%5F_runtime-env/route.ts: runtime = 'nodejs', dynamic = 'force-dynamic', GET = createRuntimeEnvHandler(config), HEAD = GET.
+2. Node Route Handler в app/runtime-env/route.ts: runtime = 'nodejs', dynamic = 'force-dynamic', GET = createRuntimeEnvHandler(config), HEAD = GET.
 3. RuntimeEnvScript в head root layout и dynamic = 'force-dynamic' в layout.
 
-Префикс %5F обязателен: обычная папка __runtime-env считается private. Итоговый URL — /__runtime-env. Handler должен обходить middleware авторизации и CDN cache. Настройка NextConfig не требует обёртки; next.config.mjs совместим со старыми Next.js. connection() на Next13/14 не нужен.
+Handler должен обходить middleware авторизации и CDN cache. Настройка NextConfig не требует обёртки; next.config.mjs совместим со старыми Next.js. connection() на Next13/14 не нужен.
 
-Существующее подключение createRuntimeEnvProxy остаётся рабочим на Node proxy Next16. Для Next13/14 **не используйте Edge middleware** как замену Node endpoint: это другая среда исполнения с другими правилами env. Для унифицированного подключения замените proxy.ts на описанный route.ts.
+Существующее подключение createRuntimeEnvProxy остаётся рабочим на Node proxy Next16 после обновления `config.matcher` на `['/runtime-env', '/__runtime-env']`. Для Next13/14 **не используйте Edge middleware** как замену Node endpoint: это другая среда исполнения с другими правилами env. Для унифицированного подключения замените proxy.ts на описанный route.ts.
 
 ## Диапазоны и ограничения
 

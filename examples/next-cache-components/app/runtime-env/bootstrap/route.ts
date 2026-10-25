@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 import { createRuntimeEnvScript } from "@serggrey1992/envbridge/runtime";
-import config from "../../runtime.config";
+import config from "../../../runtime.config";
 
 export async function GET() {
   await connection();

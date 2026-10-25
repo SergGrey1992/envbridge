@@ -19,7 +19,7 @@ export function serializePublicEnv(config: RuntimeConfig): string {
 export function createRuntimeEnvScript(config: RuntimeConfig): string {
   return `window.__NEXT_RUNTIME_ENV__=Object.freeze({version:1,values:Object.freeze(${serializePublicEnv(config)})});`;
 }
-/** Node.js JSON endpoint. In Next.js mount at /__runtime-env with force-dynamic. */
+/** Node.js JSON endpoint. In Next.js mount at /runtime-env with force-dynamic. */
 export function createRuntimeEnvHandler(
   config: RuntimeConfig,
 ): (request: Request) => Response {

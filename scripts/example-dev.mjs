@@ -32,7 +32,7 @@ try {
   for (let i = 0; i < 120; i++) {
     if (server.exitCode !== null) throw Error("Dev server exited");
     try {
-      if ((await fetch("http://localhost:3198/__runtime-env")).ok) {
+      if ((await fetch("http://localhost:3198/runtime-env")).ok) {
         ready = true;
         break;
       }

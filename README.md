@@ -65,10 +65,12 @@ export const env = {
 
 ## Обязательная интеграция Next.js
 
-Для всех поддерживаемых версий одинаково нужны Node Route Handler и скрипт в корневом layout. Обёртка next.config не требуется.
+Ниже подключение для Next.js 13–16 без Cache Components. Для `cacheComponents: true` используйте [готовый пример](examples/next-cache-components). Обёртка next.config не требуется.
+
+> Новые адреса `/runtime-env` доступны в исходниках репозитория и локальном tarball. Опубликованная npm-версия 0.1.0 использует прежний адрес; переход описан в [migration.md](docs/migration.md).
 
 ```ts
-// app/%5F_runtime-env/route.ts
+// app/runtime-env/route.ts
 import { createRuntimeEnvHandler } from '@serggrey1992/envbridge/next';
 import runtimeConfig from '../../runtime.config';
 
@@ -78,7 +80,7 @@ export const GET = createRuntimeEnvHandler(runtimeConfig);
 export const HEAD = GET;
 ```
 
-**Имя папки именно `%5F_runtime-env`**: Next.js преобразует `%5F` в `_`, и URL становится `/__runtime-env`. Папка `__runtime-env` напрямую считается private и не создаёт маршрут. При структуре src/app разместите файл там и скорректируйте путь импорта конфига.
+При структуре src/app разместите обработчик в src/app/runtime-env/route.ts и скорректируйте путь импорта конфига.
 
 ```tsx
 // app/layout.tsx — Server Component
@@ -102,7 +104,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 export default { output: 'standalone' };
 ```
 
-**Если вы уже используете createRuntimeEnvProxy на Next.js 16**, его можно оставить: API сохранён. Новый Route Handler заменяет proxy.ts, создавать одновременно оба endpoint не нужно. Не переносите старый proxy в Edge middleware Next.js 13/14: для гарантированного runtime-чтения используйте Node Route Handler. Endpoint должен обходить middleware авторизации, редиректы и кеш CDN.
+**Если вы уже используете createRuntimeEnvProxy на Next.js 16**, его можно оставить: API сохранён. Обновите `config.matcher` в proxy.ts на `['/runtime-env', '/__runtime-env']`, чтобы он пропускал новый адрес и старые браузерные bundles. Новый Route Handler заменяет proxy.ts, создавать одновременно оба endpoint не нужно. Не переносите старый proxy в Edge middleware Next.js 13/14: для гарантированного runtime-чтения используйте Node Route Handler. Endpoint должен обходить middleware авторизации, редиректы и кеш CDN.
 
 При CSP передайте nonce: `<RuntimeEnvScript config={runtimeConfig} nonce={nonce} />`. Разрешите nonce в `script-src`, а `'self'` в `connect-src`.
 
@@ -140,7 +142,7 @@ export const variables = { get API() { return env.API_URL; } };
 
 `RuntimeEnvScript` должен находиться в head динамического root layout, до hydration. Для одинакового подключения на Next.js 13–16 задайте `export const dynamic = 'force-dynamic'` в root layout. На Next.js 15/16 альтернативой служит `await connection()` до рендера использующих env компонентов. Ленивый getter сам не переводит страницу в динамический режим.
 
-`global-error.tsx` заменяет root layout. При прямой ошибке root layout скрипт может отсутствовать. Поэтому первое браузерное чтение при отсутствии снимка **один раз делает синхронный XHR** к `/__runtime-env`, получает только public allowlist и сохраняет снимок. Последующие чтения и переходы сетевых запросов не требуют. Существующий снимок сохраняется при клиентском переходе на error boundary.
+`global-error.tsx` заменяет root layout. При прямой ошибке root layout скрипт может отсутствовать. Поэтому первое браузерное чтение при отсутствии снимка **один раз делает синхронный XHR** к `/runtime-env`, получает только public allowlist и сохраняет снимок. Последующие чтения и переходы сетевых запросов не требуют. Существующий снимок сохраняется при клиентском переходе на error boundary.
 
 Это явный компромисс синхронного API: XHR блокирует основной поток и deprecated в браузерах. Некоторые политики браузера и Permissions Policy могут его запрещать; в этом случае выбрасывается диагностическая ошибка. Поддержка отключённого sync XHR не заявлена. Без layout bootstrap не вызывайте getter в обработчиках unload/pagehide.
 
@@ -217,7 +219,7 @@ npm pack
 - MVP: Node runtime, App Router, корневой endpoint; `basePath`, multi-zones, Edge, static export, экспериментальный PPR Next 14/15, Pages Router и версии Next.js вне указанной матрицы не поддерживаются.
 - Статически сгенерированный HTML с env содержит build-time значения. Ни getters, ни endpoint не исправляют уже созданный HTML. Переведите страницы в динамический режим; не помещайте runtime-чтение в `use cache`.
 - Hydration mismatch: проверьте force-dynamic в layout и endpoint, положение bootstrap, совпадение окружений backend instances, отсутствие HTML кеша и мутаций process.env.
-- Bootstrap failed: проверьте `/__runtime-env` (200 JSON), Route Handler (папка `%5F_runtime-env`), исключение из middleware, CSP, auth redirect, CDN и доступность sync XHR.
+- Bootstrap failed: проверьте `/runtime-env` (200 JSON), Route Handler в `app/runtime-env/route.ts`, исключение из middleware, CSP, auth redirect, CDN и доступность sync XHR.
 - Пустая строка вместо undefined: generated `.env` содержит `KEY=`, это существующее пустое значение. Удалите строку, если переменная действительно должна отсутствовать.
 - После смены окружения старые значения: выполните полный reload и уберите кеширование HTML/endpoint.
 - Ошибка перезаписи generated TS: выберите другой output или вручную перенесите свой файл; CLI не удаляет пользовательские файлы.

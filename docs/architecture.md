@@ -8,7 +8,7 @@
 
 Выбран снимок публичного allowlist в inline script серверного RuntimeEnvScript в head. Это простой script, выполняемый HTML-парсером до hydration. Сервер читает process.env[key] динамически; браузер читает неизменяемый снимок. Никаких значений в generated TS.
 
-Дополнительный публичный integration point: Node Route Handler app/%5F_runtime-env/route.ts с createRuntimeEnvHandler(config). Он обслуживает /__runtime-env без кеширования. В global-error при отсутствии snapshot getter один раз синхронно загружает JSON с этого endpoint. Это осознанный компромисс: sync XHR блокирует поток, deprecated браузерами и требует connect-src 'self'. Ошибка загрузки диагностируется исключением, никогда не undefined. Пользователь без этого ограничения должен использовать асинхронный UI API, который выходит за согласованное ТЗ.
+Дополнительный публичный integration point: Node Route Handler app/runtime-env/route.ts с createRuntimeEnvHandler(config). Он обслуживает /runtime-env без кеширования. В global-error при отсутствии snapshot getter один раз синхронно загружает JSON с этого endpoint. Это осознанный компромисс: sync XHR блокирует поток, deprecated браузерами и требует connect-src 'self'. Ошибка загрузки диагностируется исключением, никогда не undefined. Пользователь без этого ограничения должен использовать асинхронный UI API, который выходит за согласованное ТЗ.
 
 Обёртка next.config.ts не требуется. Обязательные точки интеграции: Node Route Handler и RuntimeEnvScript в root head. Нет mutations внутренних файлов, instrumentation и webpack plugins.
 

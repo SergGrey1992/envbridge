@@ -4,7 +4,7 @@ Node >=22.18, проверен Node 24.14.0. Next.js 13–16 App Router, Node ru
 
 1. Установить пакет и создать runtime.config.ts.
 2. Выполнить generate --code-only перед next build, либо закоммитить generated модули и проверять их актуальность в CI.
-3. Подключить app/%5F_runtime-env/route.ts с createRuntimeEnvHandler, runtime = nodejs и dynamic = force-dynamic. В root layout подключить RuntimeEnvScript и dynamic = force-dynamic.
+3. Подключить app/runtime-env/route.ts с createRuntimeEnvHandler, runtime = nodejs и dynamic = force-dynamic. В root layout подключить RuntimeEnvScript и dynamic = force-dynamic.
 4. Собрать output: standalone один раз. Перенести `.next/standalone`, `.next/static` в `.next/standalone/.next/static` и public при наличии в `.next/standalone/public`. При outputFileTracingRoot выше приложения путь server.js может быть вложенным: используйте фактическую структуру Next output.
 5. Запускать `PORT=3000 HOSTNAME=0.0.0.0 node server.js` из standalone директории с runtime окружением контейнера.
 
@@ -17,7 +17,7 @@ docker run --rm -p 3000:3000 --env-file examples/next-app/.env.staging envbridge
 
 `--env-file` здесь функция Docker, не Next.js и не CLI библиотеки. Для `.env.staging` нужен явный способ загрузки. Одного image достаточно; values не входят в TS и клиентский bundle. Серверные секреты передаются только процессу.
 
-Reverse proxy/CDN: не кешировать `/__runtime-env` и динамический HTML; endpoint должен обходить аутентификацию и редиректы. Во всех репликах одного deployment держать одинаковую публичную конфигурацию. Переход пользователя на другое окружение требует reload документа. Не смешивайте HTML одного окружения и endpoint другого.
+Reverse proxy/CDN: не кешировать `/runtime-env` и динамический HTML; endpoint должен обходить аутентификацию и редиректы. Во всех репликах одного deployment держать одинаковую публичную конфигурацию. Переход пользователя на другое окружение требует reload документа. Не смешивайте HTML одного окружения и endpoint другого.
 
 CSP требует nonce на RuntimeEnvScript и script-src, а fallback — connect-src 'self'. Если sync XHR запрещён, global-error без layout snapshot не сможет использовать синхронный API: будет RuntimeEnvBootstrapError. Не скрывайте эту ошибку.
 

@@ -96,7 +96,10 @@ describe("runtime", () => {
         version: 1,
         values: { API_URL: "loaded", ABSENT: null },
       });
-      open() {}
+      open(method: string, url: string) {
+        expect(method).toBe("GET");
+        expect(url).toBe("/runtime-env");
+      }
       send() {}
     }
     vi.stubGlobal("XMLHttpRequest", XHR);
@@ -107,7 +110,10 @@ describe("runtime", () => {
     vi.stubEnv("API_URL", "runtime");
     vi.stubEnv("SECRET", "secret-canary");
     const proxy = createRuntimeEnvProxy(config);
-    const response = proxy(new Request("http://localhost/__runtime-env"))!;
+    const response = proxy(new Request("http://localhost/runtime-env"))!;
+    expect(proxy(new Request("http://localhost/__runtime-env"))?.status).toBe(
+      200,
+    );
     expect(response.headers.get("cache-control")).toContain("no-store");
     expect(await response.text()).not.toContain("secret-canary");
     expect(proxy(new Request("http://localhost/other"))).toBeUndefined();

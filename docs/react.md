@@ -69,7 +69,7 @@ APP_NAME=Production API_URL=https://api.example.com \
 
 - Пустая строка остаётся пустой строкой; отсутствующее значение даёт undefined.
 - Новый bootstrap не меняет уже открытый документ: нужен reload. Навигация/error boundary используют исходный snapshot.
-- При отсутствующем snapshot общий клиент пытается резервный /__runtime-env endpoint. В статическом SPA такого endpoint обычно нет: вы получите RuntimeEnvBootstrapError. Загрузите runtime-env.js до приложения; не скрывайте ошибку как undefined.
+- При отсутствующем snapshot общий клиент пытается резервный /runtime-env endpoint. В статическом SPA такого endpoint обычно нет: вы получите RuntimeEnvBootstrapError. Загрузите runtime-env.js до приложения; не скрывайте ошибку как undefined.
 - CSP должен разрешать внешний script. Инъекционные символы и script terminators экранируются; в транспорте undefined обозначается null.
 - React CSR проверен, React SSR/RSC вне Next, CRA/Webpack и другие bundlers отдельно не тестировались. Универсальный client getter не привязан к Vite, но это не обещание тестирования каждого инструмента.
 

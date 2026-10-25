@@ -62,7 +62,7 @@ CI настроен для Node 22 и 24 на Ubuntu, но удалённые Gi
 
 ## Next.js 13–16 — 25 октября 2026
 
-Добавлен общий Node Route Handler createRuntimeEnvHandler. Основной пример использует app/%5F_runtime-env/route.ts, force-dynamic в layout и next.config.mjs; connection() и proxy для основного подключения не требуются. createRuntimeEnvProxy сохранён для существующих Next16 приложений. Расширены peers, добавлены React18 consumers и CI matrix.
+Добавлен общий Node Route Handler createRuntimeEnvHandler. Основной пример использует app/runtime-env/route.ts, force-dynamic в layout и next.config.mjs; connection() и proxy для основного подключения не требуются. createRuntimeEnvProxy сохранён для существующих Next16 приложений. Расширены peers, добавлены React18 consumers и CI matrix.
 
 Все 5 строк в compatibility.md прошли реальные проверки: strict generated types, CLI/npm exec,20 production/standalone A/B browser прогонов и5 server-only negative builds. Node24.14.0 локально; Node22 и24 настроены в CI. Диапазоны имеют минимальные patch-версии и не означают поддержку любого Next13.0+. Случаи вне матрицы явно ограничены.
 

@@ -23,7 +23,7 @@ export function createRuntimeEnvProxy(
 ): (request: Request) => Response | undefined {
   const handler = createRuntimeEnvHandler(config);
   return (request) =>
-    new URL(request.url).pathname === "/__runtime-env"
+    ["/runtime-env", "/__runtime-env"].includes(new URL(request.url).pathname)
       ? handler(request)
       : undefined;
 }

@@ -54,7 +54,7 @@ export function getPublicEnv(key: string): string | undefined {
     if (typeof XMLHttpRequest === "undefined")
       throw new RuntimeEnvNotInitializedError();
     try {
-      const endpoint = "/__runtime-env";
+      const endpoint = "/runtime-env";
       const request = new XMLHttpRequest();
       request.open("GET", endpoint, false);
       request.send();

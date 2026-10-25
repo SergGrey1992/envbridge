@@ -82,7 +82,7 @@ async function run(mode, label, port) {
     for (let i = 0; i < 120; i++) {
       if (server.exitCode !== null) throw Error(log);
       try {
-        if ((await fetch(`${base}/__runtime-env`)).ok) {
+        if ((await fetch(`${base}/runtime-env`)).ok) {
           ready = true;
           break;
         }
@@ -90,7 +90,7 @@ async function run(mode, label, port) {
       await new Promise((r) => setTimeout(r, 250));
     }
     if (!ready) throw Error("Server timeout " + log);
-    const response = await fetch(`${base}/__runtime-env`);
+    const response = await fetch(`${base}/runtime-env`);
     const payload = await response.text();
     assert.match(response.headers.get("cache-control"), /no-store/);
     assert(!payload.includes(secret));

@@ -61,7 +61,7 @@ try {
       let ready = false;
       for (let i = 0; i < 120; i++) {
         try {
-          if ((await fetch(`${base}/__runtime-env`)).ok) {
+          if ((await fetch(`${base}/runtime-env`)).ok) {
             ready = true;
             break;
           }
@@ -93,7 +93,7 @@ try {
       await text("#missing", name);
       const data = await (await fetch(`${base}/api/env`)).json();
       assert.deepEqual(data, { name, prefix: label, secretPresent: true });
-      const bootstrap = await (await fetch(`${base}/__runtime-env`)).text();
+      const bootstrap = await (await fetch(`${base}/runtime-env`)).text();
       assert(!bootstrap.includes("SECRET_"));
       assert(!bootstrap.includes("JWT_SECRET"));
       await context.addCookies([{ name: "root_fail", value: "1", url: base }]);

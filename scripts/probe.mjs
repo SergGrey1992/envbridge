@@ -8,7 +8,7 @@ const server = spawn(
 try {
   for (let i = 0; i < 120; i++) {
     try {
-      if ((await fetch("http://localhost:3189/__runtime-env")).ok) break;
+      if ((await fetch("http://localhost:3189/runtime-env")).ok) break;
     } catch {}
     await new Promise((r) => setTimeout(r, 500));
   }

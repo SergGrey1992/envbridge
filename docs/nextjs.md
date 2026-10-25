@@ -11,7 +11,7 @@
 ## Next.js 13/14 и Next.js 15/16 без Cache Components
 
 ```ts
-// app/%5F_runtime-env/route.ts
+// app/runtime-env/route.ts
 import { createRuntimeEnvHandler } from '@serggrey1992/envbridge/next';
 import config from '../../runtime.config';
 export const runtime = 'nodejs';
@@ -20,7 +20,7 @@ export const GET = createRuntimeEnvHandler(config);
 export const HEAD = GET;
 ```
 
-%5F обязателен: Next преобразует имя папки в URL /__runtime-env, а обычную __runtime-env исключает из routing как private folder. При src/app скорректируйте относительный импорт корневого конфига. Исключите endpoint из middleware авторизации, редиректов и кеширования CDN.
+При src/app разместите обработчик в src/app/runtime-env/route.ts и скорректируйте импорт конфига. Исключите endpoint из middleware авторизации, редиректов и кеширования CDN.
 
 ```tsx
 // app/layout.tsx
@@ -38,7 +38,7 @@ export default function Layout({children}:{children:React.ReactNode}) {
 
 Для `cacheComponents: true` используйте отдельный [готовый пример](../examples/next-cache-components).
 В нём нет `force-dynamic`: этот export несовместим с Cache Components.
-Статическая оболочка загружает обычный внешний `<script src="/__runtime-env.js" />`
+Статическая оболочка загружает обычный внешний `<script src="/runtime-env/bootstrap" />`
 в head. Node endpoint вызывает `await connection()` и возвращает
 `createRuntimeEnvScript(config)` с JavaScript Content-Type и `no-store`.
 JSON fallback endpoint также вызывает `connection()` перед `createRuntimeEnvHandler(config)`.

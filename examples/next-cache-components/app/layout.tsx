@@ -5,7 +5,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         {/* A blocking classic script initializes getters before hydration. */}
-        <script src="/__runtime-env.js" />
+        <script src="/runtime-env/bootstrap" />
       </head>
       <body>{children}</body>
     </html>
