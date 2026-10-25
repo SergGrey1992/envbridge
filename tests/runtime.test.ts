@@ -5,11 +5,7 @@ import {
   RuntimeEnvBootstrapError,
   RuntimeEnvNotInitializedError,
 } from "../src/client.js";
-import {
-  serializePublicEnv,
-  createRuntimeEnvProxy,
-  withRuntimeEnv,
-} from "../src/next.js";
+import { serializePublicEnv, createRuntimeEnvProxy } from "../src/next.js";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -115,15 +111,6 @@ describe("runtime", () => {
       proxy(new Request("http://localhost/__runtime-env", { method: "POST" }))
         ?.status,
     ).toBe(405);
-  });
-  it("preserves next configuration and rejects static export", () => {
-    const next = {
-      output: "standalone" as const,
-      basePath: "/app",
-      headers: async () => [],
-    };
-    expect(withRuntimeEnv(next, config)).toBe(next);
-    expect(() => withRuntimeEnv({ output: "export" }, config)).toThrow();
   });
 });
 

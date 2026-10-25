@@ -1,5 +1,4 @@
 import { createElement } from "react";
-import type { NextConfig } from "next";
 import { defineRuntimeConfig, type RuntimeConfig } from "./config.js";
 const escapeJson = (value: unknown): string =>
   JSON.stringify(value).replace(
@@ -60,13 +59,4 @@ export function createRuntimeEnvProxy(
       { headers },
     );
   };
-}
-export function withRuntimeEnv<T extends NextConfig>(
-  nextConfig: T,
-  config: RuntimeConfig,
-): T {
-  defineRuntimeConfig(config);
-  if (nextConfig.output === "export")
-    throw new Error("Static export cannot serve runtime environment variables");
-  return nextConfig;
 }

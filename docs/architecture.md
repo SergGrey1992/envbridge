@@ -10,7 +10,7 @@
 
 Дополнительный публичный integration point: proxy.ts с createRuntimeEnvProxy(config). Он обслуживает /__runtime-env без кеширования. В global-error при отсутствии snapshot getter один раз синхронно загружает JSON с этого endpoint. Это осознанный компромисс: sync XHR блокирует поток, deprecated браузерами и требует connect-src 'self'. Ошибка загрузки диагностируется исключением, никогда не undefined. Пользователь без этого ограничения должен использовать асинхронный UI API, который выходит за согласованное ТЗ.
 
-withRuntimeEnv сохраняет NextConfig и валидирует конфиг; он не может зарегистрировать proxy или React-компонент документированным API. Обязательные дополнительные точки: proxy.ts и RuntimeEnvScript в root head. Нет mutations внутренних файлов, instrumentation и webpack plugins.
+Обёртка next.config.ts не требуется. Обязательные точки интеграции: proxy.ts и RuntimeEnvScript в root head. Нет mutations внутренних файлов, instrumentation и webpack plugins.
 
 Root layout вызывает await connection() перед рендером snapshot. Страницы, читающие runtime значения, должны быть динамическими. Статический HTML и output: export не поддерживают runtime SSR. Отдельные server/client запросы читают один process environment; изменение process.env во время запроса не поддерживается. Клиентский snapshot живёт до reload; для другого окружения перезагрузить документ.
 

@@ -49,7 +49,13 @@ CI настроен для Node 22 и 24 на Ubuntu, но удалённые Gi
 ## Решения по ТЗ
 
 - Отдельный npm-проект размещён в next-runtime-env/ внутри доступного workspace, исходная react-hook-form-persist не изменена.
-- withRuntimeEnv использует только публичные API; для реального bootstrap дополнительно нужны proxy.ts и серверный RuntimeEnvScript в head. Wrapper сохраняет исходный NextConfig.
+- Интеграция использует только публичные API: proxy.ts и серверный RuntimeEnvScript в head. Обёртка next.config.ts удалена 25 октября 2026; настройки Next.js задаются напрямую.
 - При невозможности inline bootstrap в global-error применён синхронный endpoint fallback; его ограничения явно документированы.
 - Секреты никогда не генерируются в TS. public — единственный браузерный allowlist, а server entry дополнительно защищён server-only.
 - Запись dotenv — append; многофайловый rollback рассчитан на обычные ошибки, не power loss, kill или параллельную злонамеренную смену путей.
+
+## Упрощение интеграции — 25 октября 2026
+
+Удалён withRuntimeEnv из API, примера и актуальной документации; тест wrapper удалён. Исходное ТЗ specification.md сохранено как исторический документ. Автоматическая проверка output: export удалена вместе с wrapper; static export по-прежнему не поддерживается, что явно указано в README.
+
+После удаления: npm run check — PASS, 45 тестов (один тест удалён вместе с wrapper); свежий npm tarball установлен в consumer; 4 production/standalone A/B browser прогона и отрицательная server-only сборка — PASS.

@@ -4,7 +4,7 @@ Node >=22.18, проверен Node 24.14.0. Next.js 16.2.9 App Router, Node run
 
 1. Установить пакет и создать runtime.config.ts.
 2. Выполнить generate --code-only перед next build, либо закоммитить generated модули и проверять их актуальность в CI.
-3. Подключить withRuntimeEnv, proxy.ts, RuntimeEnvScript и await connection() в layout.
+3. Подключить proxy.ts, RuntimeEnvScript и await connection() в layout.
 4. Собрать output: standalone один раз. Перенести `.next/standalone`, `.next/static` в `.next/standalone/.next/static` и public при наличии в `.next/standalone/public`. При outputFileTracingRoot выше приложения путь server.js может быть вложенным: используйте фактическую структуру Next output.
 5. Запускать `PORT=3000 HOSTNAME=0.0.0.0 node server.js` из standalone директории с runtime окружением контейнера.
 

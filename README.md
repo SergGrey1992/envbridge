@@ -57,13 +57,11 @@ export const env = {
 ```ts
 // next.config.ts
 import type { NextConfig } from 'next';
-import { withRuntimeEnv } from '@serggrey1992/next-runtime-env/next';
-import runtimeConfig from './runtime.config';
 const nextConfig: NextConfig = { output: 'standalone' };
-export default withRuntimeEnv(nextConfig, runtimeConfig);
+export default nextConfig;
 ```
 
-Сам по себе Next config не может документированным API зарегистрировать React bootstrap или proxy. Поэтому нужны две маленькие точки интеграции:
+Библиотека не требует обёртки next.config.ts. Подключение состоит из двух точек: proxy.ts и RuntimeEnvScript в корневом layout.
 
 ```ts
 // proxy.ts — рядом с app, либо src/proxy.ts при src/app
