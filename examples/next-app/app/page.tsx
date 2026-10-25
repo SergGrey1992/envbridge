@@ -6,7 +6,7 @@ import View from "./view";
 export default function Page() {
   // Direct Node stdout: Next dev replays console.* from Server Components in the browser.
   process.stdout.write(
-    `[next-runtime-env example] Server-only variables:\n${inspect({ ...serverEnv }, { colors: false })}\n`,
+    `[envbridge example] Server-only variables:\n${inspect({ ...serverEnv }, { colors: false })}\n`,
   );
 
   return (
@@ -18,7 +18,7 @@ export default function Page() {
         fontFamily: "system-ui, sans-serif",
       }}
     >
-      <h1>Next Runtime ENV — проверка значений</h1>
+      <h1>EnvBridge — проверка значений</h1>
       <section>
         <h2>Публичное значение на сервере (SSR)</h2>
         <p>
@@ -29,7 +29,7 @@ export default function Page() {
       <View />
       <p>
         Серверные JWT_SECRET и DATABASE_URL выведены в терминал процесса Next.js
-        с меткой <code>[next-runtime-env example] Server-only variables:</code>.
+        с меткой <code>[envbridge example] Server-only variables:</code>.
       </p>
     </main>
   );

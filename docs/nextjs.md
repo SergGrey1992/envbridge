@@ -12,7 +12,7 @@
 
 ```ts
 // app/%5F_runtime-env/route.ts
-import { createRuntimeEnvHandler } from '@serggrey1992/next-runtime-env/next';
+import { createRuntimeEnvHandler } from '@serggrey1992/envbridge/next';
 import config from '../../runtime.config';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,7 +24,7 @@ export const HEAD = GET;
 
 ```tsx
 // app/layout.tsx
-import { RuntimeEnvScript } from '@serggrey1992/next-runtime-env/next';
+import { RuntimeEnvScript } from '@serggrey1992/envbridge/next';
 import config from '../runtime.config';
 export const dynamic = 'force-dynamic';
 export default function Layout({children}:{children:React.ReactNode}) {
@@ -85,7 +85,7 @@ Standalone меняет рабочий каталог: не рассчитыва
 npm ci
 npm run prepare:example
 cd examples/next-app
-npm exec next-runtime-env -- generate
+npm exec envbridge -- generate
 npm run dev
 ```
 

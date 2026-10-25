@@ -1,15 +1,15 @@
 {
-  "image": "sha256:3d543cd2f9b46b1397a08176fc301a3b63a0b999feb378f177b543544f986848",
+  "image": "sha256:0629bfd47f92d062734ee433dc11705d5361b46e8ab9de94b3a2a36dd156758f",
   "nodeVersion": "v24.22.1",
   "runs": [
     {
       "environment": "docker-A",
-      "image": "sha256:3d543cd2f9b46b1397a08176fc301a3b63a0b999feb378f177b543544f986848",
+      "image": "sha256:0629bfd47f92d062734ee433dc11705d5361b46e8ab9de94b3a2a36dd156758f",
       "result": "PASS"
     },
     {
       "environment": "docker-B",
-      "image": "sha256:3d543cd2f9b46b1397a08176fc301a3b63a0b999feb378f177b543544f986848",
+      "image": "sha256:0629bfd47f92d062734ee433dc11705d5361b46e8ab9de94b3a2a36dd156758f",
       "result": "PASS"
     }
   ]

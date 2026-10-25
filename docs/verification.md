@@ -48,7 +48,7 @@ CI настроен для Node 22 и 24 на Ubuntu, но удалённые Gi
 
 ## Решения по ТЗ
 
-- Отдельный npm-проект размещён в next-runtime-env/ внутри доступного workspace, исходная react-hook-form-persist не изменена.
+- Отдельный npm-проект размещён в envbridge/ внутри доступного workspace, исходная react-hook-form-persist не изменена.
 - Интеграция использует только публичные API: proxy.ts и серверный RuntimeEnvScript в head. Обёртка next.config.ts удалена 25 октября 2026; настройки Next.js задаются напрямую.
 - При невозможности inline bootstrap в global-error применён синхронный endpoint fallback; его ограничения явно документированы.
 - Секреты никогда не генерируются в TS. public — единственный браузерный allowlist, а server entry дополнительно защищён server-only.
@@ -89,3 +89,9 @@ CI настроен для Node 22 и 24 на Ubuntu, но удалённые Gi
 После выделения общего ядра повторно прошли все5 строк Next13–16:20 production/standalone A/B browser runs и5 server-only negative builds. Unit/CLI/bootstrap проверки:56 PASS. Исходный обязательный Next API сохранён. Независимое read-only ревью не обнаружило Critical/Important дефектов.
 
 Новые docs/nextjs.md и docs/react.md разделяют способы подключения, env file selection, process.env precedence, пустые overrides, development/production/test, static bootstrap и standalone. Пользовательские .env и .idea не изменялись. Обычный React SSR/React Native/прочие bundlers отдельно не заявлены.
+
+## Переименование в EnvBridge — 25 октября 2026
+
+npm name @serggrey1992/envbridge, bin envbridge, tarball serggrey1992-envbridge-0.1.0.tgz, GitHub SergGrey1992/envbridge и локальная папка /Users/sergdia/Documents/ChatGPT/envbridge. Все импорты, оба примера, CLI, generated headers, Docker image и активные инструкции обновлены. Историческое specification.md сохранено с notice. Старые generated headers распознаются строго и мигрируют без ручного удаления.
+
+После переименования:58 unit/CLI тестов PASS; Next13–16 matrix20 browser runs +5negative builds PASS; React18/19 no-Next dev/production A/B PASS с новым tarball; Docker envbridge-example:local A/B PASS. Пользовательский Next example обновлён на новое имя пакета и успешно пересобран; .env и .idea не изменялись. Независимое read-only ревью не выявило Important/Critical дефектов. GitHub repo переименован с сохранением истории, origin обновлён на новый SSH URL.

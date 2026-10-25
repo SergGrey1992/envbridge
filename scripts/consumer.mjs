@@ -67,7 +67,7 @@ export function prepareConsumer() {
   rmSync(`${app}/tsconfig.tsbuildinfo`, { force: true });
   rmSync(`${app}/package-lock.json`, { force: true });
   rmSync(`${app}/node_modules/.package-lock.json`, { force: true });
-  rmSync(`${app}/node_modules/@serggrey1992/next-runtime-env`, {
+  rmSync(`${app}/node_modules/@serggrey1992/envbridge`, {
     recursive: true,
     force: true,
   });
@@ -83,12 +83,12 @@ export function prepareConsumer() {
   );
   execFileSync(
     process.execPath,
-    ["node_modules/@serggrey1992/next-runtime-env/dist/cli.js", "generate"],
+    ["node_modules/@serggrey1992/envbridge/dist/cli.js", "generate"],
     { cwd: app, stdio: "inherit" },
   );
   execFileSync(
     process.execPath,
-    ["node_modules/@serggrey1992/next-runtime-env/dist/cli.js", "--help"],
+    ["node_modules/@serggrey1992/envbridge/dist/cli.js", "--help"],
     { cwd: app, stdio: "inherit" },
   );
   execFileSync(
@@ -100,21 +100,19 @@ export function prepareConsumer() {
     process.execPath,
     [
       "-e",
-      "require('@serggrey1992/next-runtime-env/next'); require('@serggrey1992/next-runtime-env/config');",
+      "require('@serggrey1992/envbridge/next'); require('@serggrey1992/envbridge/config');",
     ],
     { cwd: app, stdio: "inherit" },
   );
   execFileSync(
     "npm",
-    ["exec", "--offline", "--", "next-runtime-env", "generate", "--code-only"],
+    ["exec", "--offline", "--", "envbridge", "generate", "--code-only"],
     { cwd: app, stdio: "inherit" },
   );
   const manifest = JSON.parse(
-    readFileSync(
-      `${app}/node_modules/@serggrey1992/next-runtime-env/package.json`,
-    ),
+    readFileSync(`${app}/node_modules/@serggrey1992/envbridge/package.json`),
   );
-  if (manifest.name !== "@serggrey1992/next-runtime-env")
+  if (manifest.name !== "@serggrey1992/envbridge")
     throw new Error("Wrong consumer package");
   console.log(
     `CONSUMER PASS: ${packed.filename}, ${packed.files.length} files, strict generated types`,

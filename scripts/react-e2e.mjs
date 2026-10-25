@@ -123,7 +123,7 @@ try {
     );
     await rm(`${app}/package-lock.json`, { force: true });
     await rm(`${app}/node_modules/.package-lock.json`, { force: true });
-    await rm(`${app}/node_modules/@serggrey1992/next-runtime-env`, {
+    await rm(`${app}/node_modules/@serggrey1992/envbridge`, {
       recursive: true,
       force: true,
     });
@@ -154,7 +154,7 @@ try {
     const cli = (args, env = process.env) =>
       execFileSync(
         process.execPath,
-        ["node_modules/@serggrey1992/next-runtime-env/dist/cli.js", ...args],
+        ["node_modules/@serggrey1992/envbridge/dist/cli.js", ...args],
         { cwd: app, env, stdio: "inherit" },
       );
     const buildEnv = {

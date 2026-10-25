@@ -1,3 +1,5 @@
+> Историческое исходное ТЗ использует прежнее название `next-runtime-env`. Актуальное имя пакета — `@serggrey1992/envbridge`, CLI — `envbridge`; актуальные инструкции находятся в README.md.
+
 # Техническое задание для Codex: Next Runtime ENV
 
 Ты — senior TypeScript / Next.js library architect.

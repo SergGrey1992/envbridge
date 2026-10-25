@@ -1,14 +1,14 @@
 {
   "name":"runtime-env-react-example", "private":true, "type":"module",
   "scripts": {
-    "generate":"next-runtime-env generate",
-    "predev":"npm run generate && next-runtime-env bootstrap --dotenv .env",
+    "generate":"envbridge generate",
+    "predev":"npm run generate && envbridge bootstrap --dotenv .env",
     "dev":"vite --host 127.0.0.1",
-    "prebuild":"next-runtime-env generate --code-only && next-runtime-env bootstrap",
+    "prebuild":"envbridge generate --code-only && envbridge bootstrap",
     "build":"tsc --noEmit && vite build",
-    "bootstrap":"next-runtime-env bootstrap --output ./dist/runtime-env.js",
+    "bootstrap":"envbridge bootstrap --output ./dist/runtime-env.js",
     "preview":"vite preview --host 127.0.0.1"
   },
-  "dependencies":{"@serggrey1992/next-runtime-env":"file:../../serggrey1992-next-runtime-env-0.1.0.tgz","react":"19.2.7","react-dom":"19.2.7"},
+  "dependencies":{"@serggrey1992/envbridge":"file:../../serggrey1992-envbridge-0.1.0.tgz","react":"19.2.7","react-dom":"19.2.7"},
   "devDependencies":{"vite":"7.3.5","typescript":"^5.9.3","@types/react":"19.2.14","@types/react-dom":"19.2.3","@types/node":"^24.0.0"}
 }

@@ -39,7 +39,7 @@ function App() {
         fontFamily: "system-ui, sans-serif",
       }}
     >
-      <h1>React Runtime ENV</h1>
+      <h1>EnvBridge — React</h1>
       <p>
         Первое чтение: <code id="first-read">{firstRead}</code>
       </p>

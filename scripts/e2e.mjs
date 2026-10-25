@@ -152,7 +152,7 @@ async function run(mode, label, port) {
     });
     for (const key of ["API_URL", "APP_NAME", "NEXT_PUBLIC_TEST", "MISSING"])
       await publicTable.getByRole("row").filter({ hasText: key }).waitFor();
-    assert(log.includes("[next-runtime-env example] Server-only variables:"));
+    assert(log.includes("[envbridge example] Server-only variables:"));
     assert(log.includes(secret));
     assert(log.includes(database));
     const html = await (await fetch(base)).text();
@@ -203,7 +203,7 @@ async function run(mode, label, port) {
     await context.addCookies([{ name: "root_fail", value: "1", url: base }]);
     await page.goto(base);
     await text("#global", name);
-    assert.equal(await page.locator("#next-runtime-env").count(), 0);
+    assert.equal(await page.locator("#envbridge").count(), 0);
     await page.reload();
     await text("#global", name);
     await page.getByText("Recover", { exact: true }).click();

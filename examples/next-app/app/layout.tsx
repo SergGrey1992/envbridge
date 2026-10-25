@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { RuntimeEnvScript } from "@serggrey1992/next-runtime-env/next";
+import { RuntimeEnvScript } from "@serggrey1992/envbridge/next";
 import config from "../runtime.config";
 import Link from "next/link";
 import Root from "./root";

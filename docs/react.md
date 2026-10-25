@@ -8,7 +8,7 @@
 
 ```ts
 // runtime.config.ts
-import { defineRuntimeConfig } from '@serggrey1992/next-runtime-env/config';
+import { defineRuntimeConfig } from '@serggrey1992/envbridge/config';
 export default defineRuntimeConfig({
   public: ['API_URL', 'APP_NAME'],
   server: [],
@@ -16,8 +16,8 @@ export default defineRuntimeConfig({
 ```
 
 ```sh
-npm install @serggrey1992/next-runtime-env
-npx next-runtime-env generate
+npm install @serggrey1992/envbridge
+npx envbridge generate
 ```
 
 После публикации установка выполняется из npm; до публикации установите tarball из npm pack. Generate создаёт имена/getters и пустые .env-шаблоны. Он не копирует значения в TS. Сгенерированный server.ts предназначен для Next Server Components и в SPA не импортируется. В обычном React нет серверных компонентов; секреты должны оставаться в вашем backend.
@@ -25,7 +25,7 @@ npx next-runtime-env generate
 ## 2. Bootstrap до запуска приложения
 
 ```sh
-npx next-runtime-env bootstrap --dotenv .env
+npx envbridge bootstrap --dotenv .env
 ```
 
 По умолчанию создаётся public/runtime-env.js с фактическими значениями **только public**. Этот файл намеренно содержит публичные данные: не коммитьте сгенерированные значения. Команда читает process.env; --dotenv явно добавляет один файл, уже заданные process env имеют приоритет. Автоматического выбора .env.development/.env.production/Vite mode здесь нет.
@@ -51,10 +51,10 @@ export function App() { return <h1>{env.APP_NAME}</h1>; }
 npm run build
 # При запуске/развёртывании после build:
 APP_NAME=Staging API_URL=https://staging.example.com \
-  npx next-runtime-env bootstrap --output ./dist/runtime-env.js
+  npx envbridge bootstrap --output ./dist/runtime-env.js
 # Тот же dist для другого окружения, без повторного vite build:
 APP_NAME=Production API_URL=https://api.example.com \
-  npx next-runtime-env bootstrap --output ./dist/runtime-env.js
+  npx envbridge bootstrap --output ./dist/runtime-env.js
 ```
 
 Можно передать --dotenv .env.staging явно. Vite preview, nginx или static host обслуживает готовый dist. Выполняйте bootstrap до открытия сайта посетителям и до запуска web server, либо атомарно заменяйте файл как часть deployment. Укажите **Cache-Control: no-store** для runtime-env.js и HTML, исключите их из service worker/CDN cache. Сама CLI-команда не может настроить ваш web server. Hash-файлы приложения при этом не изменяются.

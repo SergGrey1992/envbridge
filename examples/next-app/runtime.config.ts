@@ -1,4 +1,4 @@
-import { defineRuntimeConfig } from "@serggrey1992/next-runtime-env/config";
+import { defineRuntimeConfig } from "@serggrey1992/envbridge/config";
 export default defineRuntimeConfig({
   public: ["API_URL", "APP_NAME", "NEXT_PUBLIC_TEST", "MISSING"],
   server: ["JWT_SECRET", "DATABASE_URL"],

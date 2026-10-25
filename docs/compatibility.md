@@ -16,7 +16,7 @@
 
 ## Подключение одинаково для всех строк
 
-1. Конфиг runtime.config.ts и next-runtime-env generate.
+1. Конфиг runtime.config.ts и envbridge generate.
 2. Node Route Handler в app/%5F_runtime-env/route.ts: runtime = 'nodejs', dynamic = 'force-dynamic', GET = createRuntimeEnvHandler(config), HEAD = GET.
 3. RuntimeEnvScript в head root layout и dynamic = 'force-dynamic' в layout.
 

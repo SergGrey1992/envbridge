@@ -1,4 +1,4 @@
-# Next Runtime ENV Implementation Plan
+# EnvBridge Implementation Plan
 
 Goal: самостоятельный npm MVP по ../../specification.md.
 Architecture: server inline snapshot, public proxy endpoint, synchronous error fallback.

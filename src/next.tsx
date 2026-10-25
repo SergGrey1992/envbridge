@@ -12,7 +12,7 @@ export function RuntimeEnvScript({
   nonce?: string;
 }) {
   return createElement("script", {
-    id: "next-runtime-env",
+    id: "envbridge",
     nonce,
     dangerouslySetInnerHTML: { __html: createRuntimeEnvScript(config) },
   });

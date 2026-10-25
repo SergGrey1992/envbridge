@@ -8,11 +8,11 @@ Node >=22.18, проверен Node 24.14.0. Next.js 13–16 App Router, Node ru
 4. Собрать output: standalone один раз. Перенести `.next/standalone`, `.next/static` в `.next/standalone/.next/static` и public при наличии в `.next/standalone/public`. При outputFileTracingRoot выше приложения путь server.js может быть вложенным: используйте фактическую структуру Next output.
 5. Запускать `PORT=3000 HOSTNAME=0.0.0.0 node server.js` из standalone директории с runtime окружением контейнера.
 
-Dockerfile рядом с примером выполняет все шаги. Для неопубликованного пакета сначала создайте tarball в корне библиотеки командой npm pack; Docker context — корень next-runtime-env. После публикации замените file dependency на версию registry.
+Dockerfile рядом с примером выполняет все шаги. Для неопубликованного пакета сначала создайте tarball в корне библиотеки командой npm pack; Docker context — корень envbridge. После публикации замените file dependency на версию registry.
 
 ```sh
-docker build -f examples/next-app/Dockerfile -t next-runtime-env-example .
-docker run --rm -p 3000:3000 --env-file examples/next-app/.env.staging next-runtime-env-example
+docker build -f examples/next-app/Dockerfile -t envbridge-example .
+docker run --rm -p 3000:3000 --env-file examples/next-app/.env.staging envbridge-example
 ```
 
 `--env-file` здесь функция Docker, не Next.js и не CLI библиотеки. Для `.env.staging` нужен явный способ загрузки. Одного image достаточно; values не входят в TS и клиентский bundle. Серверные секреты передаются только процессу.

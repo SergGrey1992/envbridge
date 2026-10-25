@@ -1,5 +1,5 @@
 {
-  "name": "@serggrey1992/next-runtime-env",
+  "name": "@serggrey1992/envbridge",
   "version": "0.1.0",
   "type": "module",
   "license": "MIT",
@@ -11,7 +11,7 @@
     "LICENSE"
   ],
   "bin": {
-    "next-runtime-env": "dist/cli.js"
+    "envbridge": "dist/cli.js"
   },
   "exports": {
     "./config": {
@@ -87,5 +87,13 @@
     "next": {
       "optional": true
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SergGrey1992/envbridge.git"
+  },
+  "homepage": "https://github.com/SergGrey1992/envbridge#readme",
+  "bugs": {
+    "url": "https://github.com/SergGrey1992/envbridge/issues"
   }
 }

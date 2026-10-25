@@ -5,8 +5,8 @@ import { createJiti } from "jiti";
 import { generate } from "./generator.js";
 import { writeBootstrap } from "./bootstrap.js";
 import { defineRuntimeConfig, type RuntimeConfig } from "./config.js";
-const help = `next-runtime-env generate [options]
-next-runtime-env bootstrap [options]
+const help = `envbridge generate [options]
+envbridge bootstrap [options]
   --cwd <path>           Project root (default: process cwd)
   --config <path>        Config path relative to project root
   --env <names>          Generate: configured envFiles selection; default = .env

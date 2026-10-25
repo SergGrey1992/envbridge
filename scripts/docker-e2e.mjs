@@ -10,7 +10,7 @@ function docker(args) {
     encoding: "utf8",
   }).trim();
 }
-const image = "next-runtime-env-example:local";
+const image = "envbridge-example:local";
 if (!process.env.NRE_DOCKER_SKIP_BUILD)
   execFileSync(
     "docker",
@@ -99,7 +99,7 @@ try {
       await context.addCookies([{ name: "root_fail", value: "1", url: base }]);
       await page.goto(base);
       await text("#global", name);
-      assert.equal(await page.locator("#next-runtime-env").count(), 0);
+      assert.equal(await page.locator("#envbridge").count(), 0);
       await page.getByText("Recover", { exact: true }).click();
       await text("#client", name);
       assert.deepEqual(errors, []);

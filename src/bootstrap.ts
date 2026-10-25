@@ -14,6 +14,8 @@ import type { RuntimeConfig } from "./config.js";
 import { createRuntimeEnvScript } from "./runtime.js";
 import { checkPath, existing } from "./generator.js";
 export const BOOTSTRAP_MARKER =
+  "// AUTO-GENERATED RUNTIME BOOTSTRAP BY @serggrey1992/envbridge\n";
+const LEGACY_BOOTSTRAP_MARKER =
   "// AUTO-GENERATED RUNTIME BOOTSTRAP BY @serggrey1992/next-runtime-env\n";
 export interface BootstrapOptions {
   cwd: string;
@@ -32,7 +34,12 @@ export async function writeBootstrap(
   const allowOutside = options.allowOutsideRoot ?? false;
   await checkPath(target, root, allowOutside);
   const before = await existing(target);
-  if (before && !before.toString("utf8").startsWith(BOOTSTRAP_MARKER))
+  if (
+    before &&
+    ![BOOTSTRAP_MARKER, LEGACY_BOOTSTRAP_MARKER].some((marker) =>
+      before.toString("utf8").startsWith(marker),
+    )
+  )
     throw new Error("Refusing to overwrite user bootstrap JavaScript");
   const source = Buffer.from(
     BOOTSTRAP_MARKER + createRuntimeEnvScript(config) + "\n",

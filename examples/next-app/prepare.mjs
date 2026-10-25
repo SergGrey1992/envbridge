@@ -11,8 +11,7 @@ const manifest = join(root, "package.json");
 const inCheckout =
   existsSync(join(root, "src/next.tsx")) &&
   existsSync(manifest) &&
-  JSON.parse(readFileSync(manifest, "utf8")).name ===
-    "@serggrey1992/next-runtime-env";
+  JSON.parse(readFileSync(manifest, "utf8")).name === "@serggrey1992/envbridge";
 
 if (inCheckout) {
   const packed = JSON.parse(
@@ -21,12 +20,12 @@ if (inCheckout) {
       encoding: "utf8",
     }),
   )[0];
-  const temporary = mkdtempSync(join(tmpdir(), "next-runtime-env-example-"));
+  const temporary = mkdtempSync(join(tmpdir(), "envbridge-example-"));
   try {
     // A unique path prevents npm reusing an older tarball with the same 0.1.0 filename.
     const archive = join(temporary, basename(packed.filename));
     cpSync(join(root, packed.filename), archive);
-    rmSync(join(app, "node_modules/@serggrey1992/next-runtime-env"), {
+    rmSync(join(app, "node_modules/@serggrey1992/envbridge"), {
       recursive: true,
       force: true,
     });
@@ -53,10 +52,10 @@ if (inCheckout) {
 }
 
 const require = createRequire(new URL("./package.json", import.meta.url));
-const api = require("@serggrey1992/next-runtime-env/next");
+const api = require("@serggrey1992/envbridge/next");
 if (typeof api.createRuntimeEnvHandler !== "function") {
   throw new Error(
-    "The example requires a current next-runtime-env package with createRuntimeEnvHandler. Rebuild and reinstall the library tarball.",
+    "The example requires a current envbridge package with createRuntimeEnvHandler. Rebuild and reinstall the library tarball.",
   );
 }
 console.log("Example dependency ready: createRuntimeEnvHandler is available.");

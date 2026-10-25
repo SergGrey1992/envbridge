@@ -5,7 +5,7 @@ import { spawn, execFileSync } from "node:child_process";
 import { once } from "node:events";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
-const root = await mkdtemp(join(tmpdir(), "next-runtime-env-static-"));
+const root = await mkdtemp(join(tmpdir(), "envbridge-static-"));
 const consumer = fileURLToPath(
   new URL("../examples/next-app", import.meta.url),
 );
@@ -27,7 +27,7 @@ try {
   );
   await writeFile(
     join(root, "app/page.tsx"),
-    "import { getPublicEnv } from '@serggrey1992/next-runtime-env/client';\nexport const dynamic='force-static';\nexport default function Page(){return <p>{getPublicEnv('APP_NAME')}</p>;}",
+    "import { getPublicEnv } from '@serggrey1992/envbridge/client';\nexport const dynamic='force-static';\nexport default function Page(){return <p>{getPublicEnv('APP_NAME')}</p>;}",
   );
   execFileSync(
     process.execPath,
