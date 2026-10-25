@@ -1,0 +1,77 @@
+{
+  "name": "@serggrey1992/next-runtime-env",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "description": "Typed runtime environment variables for Next.js App Router",
+  "files": [
+    "dist",
+    "README.md",
+    "docs",
+    "LICENSE"
+  ],
+  "bin": {
+    "next-runtime-env": "dist/cli.js"
+  },
+  "exports": {
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js",
+      "default": "./dist/config.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js",
+      "default": "./dist/client.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js",
+      "default": "./dist/server.js"
+    },
+    "./next": {
+      "types": "./dist/next.d.ts",
+      "import": "./dist/next.js",
+      "default": "./dist/next.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && vitest run",
+    "lint": "eslint src tests",
+    "test:e2e": "node scripts/e2e.mjs",
+    "test:consumer": "node scripts/consumer.mjs",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build",
+    "prepack": "npm run build",
+    "format": "prettier --write src tests scripts examples/next-app/app examples/next-app/*.ts",
+    "format:check": "prettier --check src tests scripts",
+    "test:docker": "npm pack && node scripts/docker-e2e.mjs",
+    "test:static": "node scripts/static-boundary.mjs"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "dependencies": {
+    "jiti": "^2.6.1",
+    "server-only": "^0.0.1"
+  },
+  "peerDependencies": {
+    "next": "16.2.9",
+    "react": "19.2.7"
+  },
+  "devDependencies": {
+    "next": "16.2.9",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4",
+    "@playwright/test": "^1.56.0",
+    "eslint": "^9.39.0",
+    "typescript-eslint": "^8.46.0",
+    "prettier": "^3.6.2"
+  }
+}

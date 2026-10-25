@@ -1,0 +1,1 @@
+{"name":"runtime-env-prototype","private":true,"type":"module","scripts":{"build":"next build --webpack","start":"next start"}}

@@ -1,0 +1,9 @@
+**/node_modules
+**/.next
+**/.env*
+**/*.tsbuildinfo
+.git
+prototype
+
+# Local tarball changes between package iterations; resolve its current integrity.
+examples/next-app/package-lock.json
